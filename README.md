@@ -1,6 +1,6 @@
 # CareSync-Clinic | Digital Health Ecosystem
 
-**CareSync** is a modern, premium healthcare ecosystem designed to streamline interactions between patients, doctors, and clinic staff. Built with a focus on responsiveness, safety, and visual excellence.
+**CareSync** is a modern, premium healthcare ecosystem designed to streamline interactions between patients, doctors, and clinic staff. Built with a focus on responsiveness, safety, and visual excellence...
 
 ---
 
