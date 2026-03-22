@@ -1,0 +1,27 @@
+UIs for Doctor
+
+UI for doctors to set and edit their own availability and schedule directly
+UI to see the daily patient queue for today or tomorrow with names, ages, reasons for visit, and new/returning status
+UI to preview a patient's complete history and uploaded documents before they even walk in for the consultation
+UI for a unified timeline to see all patient data in one place like vitals, past visits, and lab results
+UI with a smart search to quickly find past diagnoses or medications inside a patient's record
+UI for a medical summary card to see critical info at a glance like allergies, chronic conditions, and current medicines
+UI to show charts and visual trends for vitals and lab results over time
+UI with structured consultation templates to easily take notes and auto-save them
+UI option for voice-to-text when taking notes
+UI to access an integrated drug database to check dosages and drug interactions
+UI to build and type digital prescriptions with medicine names, dosages, and instructions
+UI button to auto-share the digital prescription directly to the patient app and the pharmacist
+UI to see real-time medicine stock in the clinic's pharmacy while writing the prescription
+UI to view the permanent record of all past prescriptions
+UI to check previously ordered tests and results before ordering new ones
+UI to track tests (mark as ordered, pending, or received) and view uploaded digital lab results
+UI to amend notes (since they can't be deleted) with a secure logged audit trail
+UI to write down follow-up plans, instructions, and next visit recommendations
+UI dashboard to see notifications for new lab results and a list of patients with unreviewed results
+UI that works on mobile devices to view patient data remotely
+UI for secure messaging to consult with other doctors and see notes from other providers involved with the patient
+UI to manage, track, and approve prescription refill requests with one click, and set refill limits
+UI to track if the patient actually got and took their meds (adherence tracking)
+UI flags or indicators to quickly spot urgent cases or priority appointments in the schedule
+UI for a clinical analytics dashboard to review personal practice patterns, common diagnoses, and patient outcomes

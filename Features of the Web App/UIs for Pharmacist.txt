@@ -1,0 +1,28 @@
+UIs for Pharmacist  
+
+UI to check current inventory and see real-time stock availability
+UI for low stock alerts so the pharmacy doesn't run out of common medicines
+UI to enter new stock deliveries (recording quantities, batch numbers, and tracking expiry dates systematically)
+UI to show a digital map or category locations of medicines on the shelves so staff can find items quickly
+UI to view digital prescriptions directly sent by the doctor (to fix the illegible handwriting issue and verify authenticity)
+UI to quickly check if the prescribed medicine is in stock right away while the patient is waiting
+UI to view the patient's full medication history to check for dangerous drug interactions before giving out medicines
+UI for a double-check system when preparing medicines to avoid picking the wrong one
+UI to generate and print standardized labels with clear, readable instructions for the packages
+UI to permanently record and log exactly what was dispensed to the patient for audit purposes
+UI for processing payments (calculating medicine costs, cash/card options, digital payments, and generating a receipt)
+UI to generate a written summary of usage instructions and side effects to give to the patient
+UI to handle medicine refill requests (checking if authorized and a button to directly communicate with the doctor if needed)
+UI to report and track quality issues like expired/damaged medicines or adverse patient reactions
+UI to tally and reconcile daily cash collected against the medicines dispensed at the end of the day
+UI to generate and print (or SMS) a simple queue number/token for walk-ins or check-ins so patients know their turn. Can be shared via whatsapp
+
+UI to see pharmacy updates, which medicines were dispensed, and usage instructions 
+
+Future---->>>>>
+ 
+UI to see the queue of waiting prescriptions so the pharmacist knows exactly who to serve next
+UI to search for and suggest generic substitutes if the prescribed medicine is out of stock or too expensive for the patient
+UI to handle partial dispensing if a patient only wants to buy half of the prescribed amount today (saving the rest for later)
+UI to track pending medicine orders from suppliers that haven't arrived yet
+UI to process and log expired or damaged stock being thrown away or returned to the supplier

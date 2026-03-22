@@ -1,0 +1,42 @@
+UIs for Nurse
+
+UI for a daily task list showing which patients need vitals, vaccinations, procedures, or education
+select the ward and stuff
+UI for procedure alerts to flag when a patient needs specific equipment or supplies
+UI for a standardized digital room setup checklist to prepare examination rooms
+UI to track room supply inventory with automated low-stock alerts sent to the admin
+UI showing the patient's photo, ID, and age to confirm identity before calling them in
+UI (mobile/tablet friendly) for digital vitals entry directly into the patient's record
+UI to view a vitals trends graph (BP, weight, temp) over multiple past visits
+UI prompt/alert that forces vitals to be entered before marking the intake as complete
+UI to view and update the consistent patient profile and history during the initial assessment
+UI for a prominent red banner/alert showing patient allergies across the system
+UI to type digital handoff notes and standardized intake assessments that the doctor can see in the patient timeline
+UI showing today's scheduled procedures with a required equipment checklist
+UI to check procedure room equipment availability before starting
+UI to write procedure notes (assistance provided, supplies used) with a voice-to-text option
+UI for a Digital Medication Administration Record (MAR) that requires a second nurse to double-check high-risk meds
+UI for a permanent digital immunization/vaccine record linked to the patient
+UI prompt forcing an allergy verification check before administering any medication
+UI that automatically deducts stock from the vaccine inventory when a vaccine is administered
+UI to take and upload wound images to the patient record to track healing over time
+UI to generate a digital after-visit summary with care instructions and education materials
+UI to print patient labels directly for external lab sample containers
+UI to log and track collected samples (sent date, expected results date)
+UI to auto-notify the patient when their external lab results are uploaded
+UI to access a video library or multilingual pre-written education materials to show/send to patients
+UI to book follow-up appointments directly from the nurse interface
+UI to track which patients have or haven't booked their recommended follow-ups
+UI to schedule automated follow-up check-in messages and track patient responses
+UI to automatically generate immunization reports for health authorities
+UI for a nursing dashboard to track completed tasks, procedures done, and overall patient load/workload analytics
+
+
+
+
+we have 2 categories -
+
+from appointments, and from accidents  ..
+
+
+if its an accident, there's no time to make an appointments and take the patient in... so we first take then someone else fill the  details and save the record... we'll assume that is nurse 

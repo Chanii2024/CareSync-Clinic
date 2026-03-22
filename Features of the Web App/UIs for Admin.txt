@@ -1,0 +1,19 @@
+UIs for Admin
+
+Dashboard, UI for account activation and deactivation...
+UI for add/remove user stuff
+UI for a big appointments list/table to see everything
+UI to check conflicts and unpaid stuff
+UI for basic billing overview like total earned
+Admin can fix things ASAP if something goes wrong that can't be fixed by the relevant person
+Separate UI to check logs and the people associated with them
+Okay then assume generating reports is done by the admin after cleaning up or organizing issues
+(Here what about a manager - we don't need one here right? If we're talking about real life, isn't it the manager who does that?)
+UI for a complaint box to see them, fix them, and change status...
+UI for alerts/notifications
+UI states like confirmation popups, empty states, loading, and error messages
+UI for access control and roles
+Search and filter options would be great everywhere...
+Charts and graphs 📈
+UI for maintenance mode where we can set a time and turn it on, and show a system-generated msg at the top
+A UI to request permission to deal with data where the admin has no permission but gotta access those pages for urgent situations...

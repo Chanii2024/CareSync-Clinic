@@ -1,0 +1,29 @@
+UIs for Receptionist 
+
+UI for a calendar where we add events and short reminders
+UI buttons on the calendar to contact the relevant people regarding issues
+UI for system-generated reminders...
+UI to see missed calls (optional)
+UI to see urgent messages from doctors if they get late
+UI button near the doctor messages to quickly fetch the patients who've made appointments
+UI to check appointment times and inform patients early if a doctor requests urgent leaving
+UI interface to check all ongoing appointments and see what's free
+UI showing patient details for each appointment slot just in case someone else requests it
+UI to enter patient's data for appointments
+UI fields to enter ID/NIC to fetch past patient data and make a new appointment
+UI for appointment overlaps (optional but good) for unpaid slots showing it's taken but not guaranteed
+UI overlay/popup if booking an already taken (but unpaid) slot, showing the existing guest's name, NIC, and a message to contact them
+UI button in that overlay to swap it right away
+UI to quickly swap an appointment slot to a new one
+UI for emergency appointments to give priority to the new guy and inform the other patients...
+UI to cancel or remove appointments
+UI for patient's complaints (guys do we have this?)
+UI to show validation error messages and those stuff...
+UI button to make a daily report at the end of the day
+UI for -> System saves the user's NIC, name stuff when cancelling/removing without knowing the user who uses the system
+UI for -> Every change will be kept in the database for admin review if it's needed by any chance later
+UI for -> Keeping the swapped record somewhere else...
+UI to quickly change an appointment status to "Arrived" (for check-ins) or "No-Show"
+UI for a "Quick Walk-in" booking to easily squeeze someone in without going through the long process
+UI for processing payments at the counter (calculating fees, cash/card toggle) and generating a digital receipt
+UI to add "Special Notes" or tags to an appointment for the doctor to see (like if they need physical help or have a specific request)

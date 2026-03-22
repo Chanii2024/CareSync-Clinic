@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareSync | Digital Health Portal</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="Favicon.png">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Social Preview (Open Graph) -->
+    <meta property="og:title" content="CareSync | Private Healthcare Clinic Portal">
+    <meta property="og:description"
+        content="A premium, mobile-first digital ecosystem for Patients, Doctors, Nurses, and Clinic Staff.">
+    <meta property="og:image" content="https://caresync-clinic.web.app/SocialPreview.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://caresync-clinic.web.app">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Preview -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="CareSync Portal">
+    <meta name="twitter:description"
+        content="Experience modern healthcare management with our streamlined clinic dashboard.">
+    <meta name="twitter:image" content="https://caresync-clinic.web.app/SocialPreview.png">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-heart-pulse"></i>
+                    <span>CareSync</span>
+                </div>
+                <button class="mobile-close" id="sidebarClose"><i class="fas fa-times"></i></button>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="nav-item active" data-view="dashboard">
+                        <a href="#"><i class="fas fa-th-large"></i> <span>Dashboard</span></a>
+                    </li>
+                    <li class="nav-item" data-view="profile">
+                        <a href="#"><i class="fas fa-user-circle"></i> <span>My Profile</span></a>
+                    </li>
+                    <li class="nav-item" data-view="doctors">
+                        <a href="#"><i class="fas fa-user-md"></i> <span>Find Doctors</span></a>
+                    </li>
+                    <li class="nav-item" data-view="booking">
+                        <a href="#"><i class="fas fa-calendar-plus"></i> <span>Book Appointment</span></a>
+                    </li>
+                    <li class="nav-item" data-view="appointments">
+                        <a href="#"><i class="fas fa-calendar-check"></i> <span>Upcoming Visits</span></a>
+                    </li>
+                    <li class="nav-item" data-view="records">
+                        <a href="#"><i class="fas fa-file-medical"></i> <span>Health Records</span></a>
+                    </li>
+                    <li class="nav-item" data-view="billing">
+                        <a href="#"><i class="fas fa-file-invoice-dollar"></i> <span>Billing & Pharmacy</span></a>
+                    </li>
+                    <li class="nav-item" data-view="messages">
+                        <a href="#"><i class="fas fa-comment-medical"></i> <span>Messages</span></a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="sidebar-info">
+                    <i class="fas fa-shield-halved"></i>
+                    <span>Settings</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="mobile-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+                    <h1 id="viewTitle">Dashboard</h1>
+                </div>
+                <div class="header-right">
+                    <!-- Role Switcher for Demo -->
+                    <div class="role-switcher">
+                        <button class="btn btn-outline small" id="roleToggle">
+                            <i class="fas fa-sync-alt"></i> <span id="currentRoleText">Switch to Doctor</span>
+                        </button>
+                    </div>
+                    <div class="notifications-dropdown">
+                        <button class="icon-btn" id="notifBtn">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge">3</span>
+                        </button>
+                    </div>
+                    <div class="user-profile-wrapper">
+                        <div class="user-profile" id="headerUserProfile">
+                            <img src="https://ui-avatars.com/api/?name=Tang+San&background=1a365d&color=fff" alt="User"
+                                class="avatar">
+                            <div class="user-info">
+                                <span class="user-name">Tang San</span>
+                                <span class="user-role" id="currentUserRoleHeader">Patient</span>
+                            </div>
+                        </div>
+                        <div class="profile-dropdown" id="profileDropdown">
+                            <div class="dropdown-header">
+                                <strong>Tang San</strong>
+                                <span>tang@gmail.com</span>
+                            </div>
+                            <ul class="dropdown-menu">
+                                <li><a href="#" data-action="profile"><i class="fas fa-user-circle"></i> My Profile</a>
+                                </li>
+                                <li><a href="#" data-action="settings"><i class="fas fa-cog"></i> Account Settings</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li><button class="logout-btn" id="headerLogoutBtn"><i class="fas fa-sign-out-alt"></i>
+                                        Logout</button></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dynamic Content -->
+            <div class="content-scroll-area" id="mainViewContent">
+                <!-- Views will be injected here -->
+                <div class="view-loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Professional Login Modal -->
+    <div id="authOverlay" class="auth-overlay">
+        <div class="login-card">
+            <button class="modal-close" id="closeAuthModal"><i class="fas fa-times"></i></button>
+            <h3>Welcome Back</h3>
+            <p>Please enter your professional credentials to access the clinic dashboard.</p>
+
+            <div class="auth-hint">
+                <strong>Demo Credentials:</strong><br>
+                Email: <code>role@gmail.com</code><br>
+                Password: <code>care123</code>
+            </div>
+
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="loginEmail" placeholder="admin@gmail.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" value="care123" required>
+                </div>
+                <button type="submit" class="btn btn-primary full-width mt-4">Secure Login</button>
+                <div class="divider"><span>OR</span></div>
+                <button type="button" class="btn btn-outline full-width" id="guestLoginBtn">
+                    <i class="fas fa-user-secret"></i> Continue as Guest
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- UI Feedback Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- App Modules -->
+    <script src="booking-portal.js"></script>
+    <script src="app.js"></script>
+    <script src="patient-visits.js"></script>
+    <script src="patient-records.js"></script>
+    <script src="patient-billing.js"></script>
+    <script src="patient-messages.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,46 @@
+UIs for Patient
+
+1) UI to create and manage a permanent patient profile (details, ID, insurance) so they only have to enter it once..
+2) UI to browse a doctor directory, filter by specialty, and see real-time availability
+3) UI to book an appointment slot 24/7 and get. no need for confirmation msgs since we show the slots available  
+4) UI to view, reschedule, or cancel upcoming appointments easily to free up slots
+5) UI during booking to show a prep checklist of required documents to bring - recommendation 
+6) UI during booking to show a cost estimator for consultation and procedure fees before confirming
+7) UI to upload medical documents, images, or external PDF lab reports to the appointment for the doctor to preview - optional 
+8) UI to view the complete digital health record and past visit history at this clinic
+9) UI to view clear digital prescriptions typed by the doctor - so here the ones can be uploaded by the patient will upload to the system using the mobile... also the ones should be uploaded by the doctor will ask nurse for it -here we'll need a mobile app, a small one and connected with the system, and they will be shown in the system Realtime...
+
+^^^^ Future Task ^^^^ 
+
+10) UI to view visit summaries, doctor's instructions, test details, and treatment plans anytime...
+11) UI for online payments and viewing payment history (with an option to pay all at once)
+12) UI for a simple, secure chat interface to ask quick questions to doctors they have already consulted
+13) UI to see automated reminders and notifications for upcoming visits - ADD->> pending time
+
+
+
+UI changes for Patient->
+
+bring the logout btn to profile overlay 
+
+remove 
+Last Heart Rate with appoinment count 
+
+add these fields for Patient profile Tab ->
+refer to Patient Profile Fields on google drive
+
+add guest mode for login model
+close btn
+
+add more specialties for teh dropdown 
+
+for book appointment tab -> just refer to e channeling 
+
+implement Payment History if we have time 
+
+Messages Tab -> hmmadd some dropdowns for selecting a doctor or specialization bla bla bla.....
+
+
+Find doctors -> by clicking a doctore -> we get the Available Slots panel -> thenshow up to a month maybe
+
+find doctors -> panel -> let patient fill vailable slots,based on that , the time slots will be shown below
