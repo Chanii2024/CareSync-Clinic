@@ -274,6 +274,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (filterOverlay) filterOverlay.classList.remove('active');
         document.body.style.overflow = '';
 
+        // Update active class on nav items
+        const items = document.querySelectorAll('.nav-item');
+        items.forEach(nav => nav.classList.remove('active'));
+        const activeNav = document.querySelector(`.nav-item[data-view="${viewKey}"]`);
+        if (activeNav) activeNav.classList.add('active');
+
         // Show loading state
         mainViewContent.innerHTML = `
             <div class="view-loading">
@@ -283,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Update Title
         const navItem = document.querySelector(`.nav-item[data-view="${viewKey}"] span`);
-        viewTitle.textContent = navItem ? navItem.textContent : 'Dashbord';
+        viewTitle.textContent = navItem ? navItem.textContent : 'Dashboard';
 
         // Simulate network delay for "Perfect alignment/planning" feel
         setTimeout(() => {

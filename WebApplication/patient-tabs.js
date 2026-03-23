@@ -61,7 +61,7 @@
                                 <div class="flex gap-4">
                                     <span class="status-badge ${apt.status}">${apt.status}</span>
                                     <div class="action-btns">
-                                        <button class="btn btn-outline small" onclick="window.app.showAptAction('Reschedule', '${apt.id}')">Reschedule</button>
+                                        <button class="btn btn-outline small" onclick="window.app.switchView('booking')">Reschedule</button>
                                         <button class="btn btn-danger small" onclick="window.app.showAptAction('Cancel', '${apt.id}')">Cancel</button>
                                     </div>
                                 </div>

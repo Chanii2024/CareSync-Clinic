@@ -1,209 +1,378 @@
-
 /**
  * Patient Module: Upcoming Visits
  */
-(function() {
+
+(function () {
+
     window.app = window.app || {};
 
+    // -------------------------
+    // APPOINTMENT DATA
+    // -------------------------
+
+    const appointments = [
+
+        {
+            id: 'APT-102',
+            doctor: 'Dr. Rohan Silva',
+            specialty: 'Cardiology',
+            location: 'City Hospital – Floor 3',
+            date: '24',
+            month: 'MAR',
+            time: '09:30 AM',
+            status: 'confirmed'
+        },
+
+        {
+            id: 'APT-103',
+            doctor: 'Dr. Priya Sharma',
+            specialty: 'Dermatology',
+            location: 'Metro Skin Clinic',
+            date: '28',
+            month: 'MAR',
+            time: '04:00 PM',
+            status: 'pending'
+        },
+
+        {
+            id: 'APT-104',
+            doctor: 'Dr. Amal Perera',
+            specialty: 'General Medicine',
+            location: 'Colombo Medical Center',
+            date: '05',
+            month: 'APR',
+            time: '10:00 AM',
+            status: 'confirmed'
+        }
+
+    ];
+
+
+    // -------------------------
+    // RENDER APPOINTMENTS
+    // -------------------------
+
     function renderAppointments() {
-        const appointments = [
-            {
-                id: 'APT-102',
-                doctor: 'Dr. Rohan Silva',
-                specialty: 'Cardiology',
-                date: '24',
-                month: 'MAR',
-                time: '09:30 AM',
-                status: 'confirmed',
-                fullDate: new Date(new Date().setDate(new Date().getDate() + 2))
-            },
-            {
-                id: 'APT-103',
-                doctor: 'Dr. Priya Sharma',
-                specialty: 'Dermatology',
-                date: '28',
-                month: 'MAR',
-                time: '04:00 PM',
-                status: 'pending',
-                fullDate: new Date(new Date().setDate(new Date().getDate() + 6))
-            },
-            {
-                id: 'APT-104',
-                doctor: 'Dr. Amal Perera',
-                specialty: 'General Medicine',
-                date: '05',
-                month: 'APR',
-                time: '10:00 AM',
-                status: 'confirmed',
-                fullDate: new Date(new Date().setDate(new Date().getDate() + 14))
-            },
-            {
-                id: 'APT-105',
-                doctor: 'City Lab',
-                specialty: 'Blood Test Profile',
-                date: '10',
-                month: 'APR',
-                time: '07:30 AM',
-                status: 'pending',
-                fullDate: new Date(new Date().setDate(new Date().getDate() + 19))
-            }
-        ];
 
-        const mainViewContent = document.getElementById('mainViewContent');
-        if (!mainViewContent) return;
+        const container = document.getElementById("mainViewContent");
+        if (!container) return;
 
-        mainViewContent.innerHTML = `
-            <div class="patient-tab-container animate-fade-in">
-                <div class="flex-between mb-6">
-                    <h3>My Upcoming Visits</h3>
-                    <button class="btn btn-primary" onclick="window.app.switchView('booking')">+ New Appointment</button>
-                </div>
+        container.innerHTML = `
 
-                <div class="cta-banner p-4 mb-6 bg-light border-radius flex-between animate-slide-up" style="border-left: 4px solid var(--accent)">
-                    <div>
-                        <h4 class="text-primary">Due for a Checkup?</h4>
-                        <p class="text-sm text-muted">It’s been 6 months since your last full body checkup.</p>
-                    </div>
-                    <button class="btn btn-outline small" onclick="window.app.switchView('booking')">Schedule Now</button>
-                </div>
-                
-                <div class="appointment-card-list">
-                    ${appointments.map(apt => `
-                        <div class="apt-item animate-slide-up" onclick="window.app.showAptDetail('${apt.id}')" style="cursor: pointer;">
-                            <div class="apt-info">
-                                <div class="apt-date-box">
-                                    <span class="day">${apt.date}</span>
-                                    <span class="month">${apt.month}</span>
-                                </div>
-                                <div class="apt-details">
-                                    <h4>${apt.doctor}</h4>
-                                    <p>${apt.specialty} • ${apt.time}</p>
-                                    <div class="pending-time">
-                                        <i class="fas fa-clock"></i> 
-                                        <span>Starts in: ${calculatePendingTime(apt.fullDate)}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="apt-actions" onclick="event.stopPropagation()">
-                                <div class="flex gap-4">
-                                    <span class="status-badge ${apt.status}">${apt.status}</span>
-                                    <div class="action-btns">
-                                        <button class="btn btn-outline small" onclick="window.app.showAptAction('Reschedule', '${apt.id}')">Reschedule</button>
-                                        <button class="btn btn-danger small" onclick="window.app.showAptAction('Cancel', '${apt.id}')">Cancel</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
-        `;
+<div class="patient-tab-container">
+
+<div class="flex-between mb-6">
+
+<h2>My Upcoming Visits</h2>
+
+<button class="btn btn-primary"
+onclick="window.app.switchView('booking')">
++ New Appointment
+</button>
+
+</div>
+
+
+<div class="appointment-card-list">
+
+${appointments.map(apt => `
+
+<div class="apt-item">
+
+<div class="apt-info">
+
+<div class="apt-date-box">
+
+<span class="day">${apt.date}</span>
+<span class="month">${apt.month}</span>
+
+</div>
+
+<div class="apt-details">
+
+<h4>${apt.doctor}</h4>
+
+<p>
+${apt.specialty} • ${apt.time}
+</p>
+
+</div>
+
+</div>
+
+
+<div class="apt-actions">
+
+<span class="status-badge ${apt.status}">
+${apt.status}
+</span>
+
+<button class="btn small"
+onclick="window.app.showAptDetail('${apt.id}')">
+View
+</button>
+
+<button class="btn btn-outline small"
+onclick="window.app.switchView('booking')">
+Reschedule
+</button>
+
+<button class="btn btn-danger small"
+onclick="window.app.showAptAction('Cancel','${apt.id}')">
+Cancel
+</button>
+
+</div>
+
+</div>
+
+`).join("")}
+
+</div>
+
+</div>
+`;
     }
 
-    function calculatePendingTime(targetDate) {
-        const now = new Date();
-        const diff = targetDate - now;
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        if (days > 0) return `${days}d ${hours}h`;
-        if (hours > 0) return `${hours}h remaining`;
-        return "Soon";
-    }
+
+
+    // -------------------------
+    // VIEW APPOINTMENT MODAL
+    // -------------------------
 
     function showAptDetail(aptId) {
-        const overlay = document.getElementById('customModalOverlay');
-        if (!overlay) return;
 
-        overlay.innerHTML = `
-            <div class="custom-modal">
-                <div class="modal-header"><h3>Appointment Details</h3></div>
-                <div class="modal-body">
-                    <div class="detail-grid gap-6">
-                        <div class="flex gap-4 mb-6">
-                            <img src="https://ui-avatars.com/api/?name=Dr+Silva&background=1a365d&color=fff" class="avatar-lg border-radius">
-                            <div>
-                                <h4 class="text-primary">Dr. Rohan Silva</h4>
-                                <p class="text-muted">Senior Consultant • Cardiology</p>
-                                <span class="status-badge confirmed mt-2">Verified Professional</span>
-                            </div>
-                        </div>
-                        <div class="info-strip bg-light p-4 border-radius">
-                            <div class="flex-between mb-2"><span>Type:</span><strong>In-Person Consultation</strong></div>
-                            <div class="flex-between mb-2"><span>Location:</span><strong>City Hospital, Floor 3</strong></div>
-                            <div class="flex-between"><span>Reference:</span><strong>#${aptId}</strong></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary" onclick="window.app.closeCustomModal()">Got it</button>
-                </div>
-            </div>
-        `;
-        overlay.classList.add('active');
-    }
+        const apt = appointments.find(a => a.id === aptId);
+        let overlay = document.getElementById("customModalOverlay");
 
-    function showAptAction(action, aptId) {
-        const modalId = 'customModalOverlay';
-        let overlay = document.getElementById(modalId);
-        
         if (!overlay) {
-            overlay = document.createElement('div');
-            overlay.id = modalId;
-            overlay.className = 'custom-modal-overlay';
+            overlay = document.createElement("div");
+            overlay.id = "customModalOverlay";
+            overlay.className = "custom-modal-overlay";
             document.body.appendChild(overlay);
         }
 
-        const isCancel = action === 'Cancel';
-        
         overlay.innerHTML = `
-            <div class="custom-modal">
-                <div class="modal-header">
-                    <h3>${action} Appointment</h3>
-                </div>
-                <div class="modal-body">
-                    <p>Are you sure you want to ${action.toLowerCase()} appointment <strong>${aptId}</strong>?</p>
-                    ${isCancel ? `
-                        <div class="form-group mt-4">
-                            <label>Reason for Cancellation</label>
-                            <select class="custom-select" id="cancelReason">
-                                <option>Personal Emergency</option>
-                                <option>Feeling Better</option>
-                                <option>Schedule Conflict</option>
-                                <option>Found Another Clinic</option>
-                            </select>
-                        </div>
-                    ` : `
-                        <div class="form-group mt-4">
-                            <label>New Requested Date</label>
-                            <input type="date" id="rescheduleDate" class="form-control" required>
-                        </div>
-                    `}
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-outline" onclick="window.app.closeCustomModal()">Go Back</button>
-                    <button class="btn ${isCancel ? 'btn-danger' : 'btn-primary'}" id="confirmModalBtn">Confirm ${action}</button>
-                </div>
-            </div>
-        `;
 
-        overlay.classList.add('active');
-        
-        document.getElementById('confirmModalBtn').onclick = () => {
-             if (!isCancel) {
-                const dateVal = document.getElementById('rescheduleDate').value;
-                if (!dateVal) {
-                    window.app.showToast('Error', 'Please select a new date', 'error');
-                    return;
-                }
-            }
-            window.app.closeCustomModal();
-            window.app.showToast('Success', `Appointment ${aptId} ${action.toLowerCase()}ed successfully.`, 'success');
-        };
+<div class="custom-modal apt-detail-modal">
+
+<div class="apt-modal-header">
+
+<h3>Appointment Details</h3>
+
+<span class="status-badge ${apt.status}">
+${apt.status}
+</span>
+
+</div>
+
+
+<div class="apt-doctor-section">
+
+<img 
+src="https://ui-avatars.com/api/?name=${apt.doctor.replace(/ /g, '+')}&background=1a365d&color=fff&size=64"
+class="doctor-avatar"
+/>
+
+<div>
+
+<h4>${apt.doctor}</h4>
+
+<p class="doctor-specialty">
+${apt.specialty}
+</p>
+
+</div>
+
+</div>
+
+
+<div class="apt-info-grid">
+
+<div class="info-card">
+
+<span class="info-label">Date</span>
+<span class="info-value">${apt.date} ${apt.month}</span>
+
+</div>
+
+
+<div class="info-card">
+
+<span class="info-label">Time</span>
+<span class="info-value">${apt.time}</span>
+
+</div>
+
+
+<div class="info-card">
+
+<span class="info-label">Reference</span>
+<span class="info-value">#${apt.id}</span>
+
+</div>
+
+
+<div class="info-card full">
+
+<span class="info-label">Location</span>
+<span class="info-value">${apt.location}</span>
+
+</div>
+
+</div>
+
+
+<div class="apt-modal-actions">
+
+<button class="btn btn-outline"
+onclick="window.app.closeCustomModal()">
+Close
+</button>
+
+<button class="btn btn-primary"
+onclick="window.app.closeCustomModal(); window.app.switchView('booking');">
+Reschedule
+</button>
+
+</div>
+
+</div>
+`;
+
+        overlay.classList.add("active");
+
     }
 
+
+
+    // -------------------------
+    // CANCEL / RESCHEDULE MODAL
+    // -------------------------
+
+    function showAptAction(action, aptId) {
+
+        let overlay = document.getElementById("customModalOverlay");
+        if (!overlay) {
+            overlay = document.createElement("div");
+            overlay.id = "customModalOverlay";
+            overlay.className = "custom-modal-overlay";
+            document.body.appendChild(overlay);
+        }
+
+        overlay.innerHTML = `
+
+<div class="custom-modal">
+
+<div class="modal-header">
+<h3>${action} Appointment</h3>
+</div>
+
+<div class="modal-body">
+
+<p style="margin-bottom: 24px; color: var(--text-muted); line-height: 1.6; font-size: 0.95rem;">
+Are you sure you want to ${action.toLowerCase()} <strong style="color: var(--primary);">${aptId}</strong>?
+</p>
+
+${action === "Cancel" ? `
+
+<div class="form-group">
+    <label style="font-weight: 600; color: var(--text-main); margin-bottom: 8px; display: block;">Cancellation Reason</label>
+    <select id="cancelReason" class="custom-select" style="width: 100%; padding: 14px 16px; border: 1.5px solid var(--border-color); border-radius: 12px; background: var(--bg-main); font-size: 1rem; cursor: pointer; margin-bottom: 12px;" onchange="document.getElementById('otherReasonContainer').style.display = this.value === 'Other' ? 'block' : 'none'">
+        <option disabled selected>Please select a reason...</option>
+        <option value="Emergency">Personal Emergency</option>
+        <option value="Conflict">Schedule Conflict</option>
+        <option value="Feeling Better">Feeling Better</option>
+        <option value="Other">Other / Type my own</option>
+    </select>
+</div>
+<div id="otherReasonContainer" class="form-group" style="display: none; transition: all 0.3s ease;">
+    <input type="text" id="otherReason" placeholder="Please specify your reason" style="width: 100%; padding: 14px 16px; border: 1.5px solid var(--border-color); border-radius: 12px; background: white; font-family: inherit; font-size: 1rem;">
+</div>
+
+` : `
+
+<div class="form-group">
+    <label style="font-weight: 600; color: var(--text-main); margin-bottom: 8px; display: block;">Select New Date</label>
+    <input type="date" id="rescheduleDate" style="width: 100%; padding: 14px 16px; border: 1.5px solid var(--border-color); border-radius: 12px; background: var(--bg-main); font-family: inherit; font-size: 1rem; outline: none;">
+</div>
+
+`}
+
+</div>
+
+
+<div class="modal-footer" style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 12px;">
+
+<button class="btn btn-outline"
+onclick="window.app.closeCustomModal()">
+Back
+</button>
+
+<button class="btn btn-primary"
+id="confirmAction">
+Confirm
+</button>
+
+</div>
+
+</div>
+
+`;
+
+        overlay.classList.add("active");
+
+
+        document.getElementById("confirmAction").onclick = () => {
+
+            window.app.closeCustomModal();
+
+            if (window.app.showToast) {
+
+                window.app.showToast(
+                    "Success",
+                    `Appointment ${aptId} ${action.toLowerCase()}ed`,
+                    "success"
+                );
+
+            }
+
+        };
+
+    }
+
+
+
+    // -------------------------
+    // CLOSE MODAL
+    // -------------------------
+
+    function closeCustomModal() {
+
+        const overlay = document.getElementById("customModalOverlay");
+
+        if (overlay) {
+
+            overlay.classList.remove("active");
+            overlay.innerHTML = "";
+
+        }
+
+    }
+
+
+
+    // -------------------------
+    // EXPORT FUNCTIONS
+    // -------------------------
+
     Object.assign(window.app, {
+
         renderAppointments,
+        showAptDetail,
         showAptAction,
-        showAptDetail
+        closeCustomModal
+
     });
+
 })();
