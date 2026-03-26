@@ -55,10 +55,10 @@ document.addEventListener('DOMContentLoaded', () => {
         'doc-schedule': () => window.app.renderDocSchedule(),
         'doc-analytics': () => window.app.renderDocAnalytics(),
         'doc-patient-detail': (id) => window.app.renderDocConsultation(id),
-        'rec-dashboard': renderRecDashboard,
-        'rec-appointments': renderRecAppointments,
-        'rec-payments': renderRecPayments,
-        'rec-reports': renderRecReports,
+        'rec-dashboard': () => window.app.renderRecDashboard(),
+        'rec-appointments': () => window.app.renderRecAppointments(),
+        'rec-payments': () => window.app.renderRecPayments(),
+        'rec-reports': () => window.app.renderRecReports(),
         'phar-dashboard': renderPharDashboard,
         'phar-inventory': renderPharInventory,
         'phar-dispense': renderPharDispense,
@@ -1336,127 +1336,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 4000);
     }
 
-    function renderRecDashboard() {
-        mainViewContent.innerHTML = `
-            <div class="rec-dashboard">
-                <div class="card bg-primary text-white flex-between p-6">
-                    <div>
-                        <h3>Doctor Presence Today</h3>
-                        <p>Dr. Rohan (Active), Dr. Sarah (Leaves 2pm), Dr. Kevin (On Leave)</p>
-                    </div>
-                    <button class="btn btn-accent small" onclick="window.app.showToast('Alert Sent', 'Patients informed about doctor early leave.', 'warning')">Alert Patients</button>
-                </div>
 
-                <div class="calendar-grid mt-6">
-                    <div class="calendar-main card">
-                        <div class="flex-between">
-                            <h3>Appointment Calendar</h3>
-                            <button class="btn btn-primary small">+ Quick Walk-in</button>
-                        </div>
-                        <div class="cal-placeholder mt-4">
-                            <table class="cal-table">
-                                <thead><tr><th>Time</th><th>Dr. Rohan</th><th>Dr. Sarah</th></tr></thead>
-                                <tbody>
-                                    <tr><td>09:00</td><td class="booked">Kamal P. <small>(Confirmed)</small></td><td>Free</td></tr>
-                                    <tr><td>09:30</td><td class="overlap" onclick="window.app.showOverlapPopup()">Nimali F. <small>(Unpaid Conflict)</small></td><td class="booked">User #882</td></tr>
-                                    <tr><td>10:00</td><td>Free</td><td>Free</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="rec-sidebar card">
-                        <h3>Notifications</h3>
-                        <div class="alert danger mt-4">
-                            <strong>Urgent Msg: Dr. Rohan</strong>
-                            <p>Stuck in traffic. Delay 15 mins for first 5 patients.</p>
-                        </div>
-                        <div class="alert info mt-4">
-                             <strong>Missed Calls</strong>
-                             <p>0771122334 (10:05 AM)</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    function showOverlapPopup() {
-        showToast('Overlap Detected', 'Slot taken by Nimali F. (NIC: 95...-V). Contact her to swap or confirm payment.', 'error');
-    }
-
-    function renderRecAppointments() {
-        mainViewContent.innerHTML = `
-            <div class="rec-appointments card">
-                <h3>Find & Manage Appointments</h3>
-                <div class="search-bar mt-4 flex gap-2">
-                    <input type="text" placeholder="Search Patient NIC..." class="form-control">
-                    <button class="btn btn-primary small">Search</button>
-                </div>
-                
-                <div class="quick-add-notes mt-6 p-4 bg-light border-radius">
-                     <h4>Appointment Special Notes</h4>
-                     <textarea class="form-control mt-2" rows="2" placeholder="Add notes for Doctor (e.g. Needs physical help, urgent refill request...)"></textarea>
-                </div>
-
-                <div class="table-responsive mt-6">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>NIC</th>
-                                <th>Patient</th>
-                                <th>Doctor</th>
-                                <th>Time</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>951234567V</td>
-                                <td>Kamal Perera</td>
-                                <td>Dr. Rohan</td>
-                                <td>09:00 AM</td>
-                                <td><span class="badge primary">Confirmed</span></td>
-                                <td>
-                                    <button class="btn btn-outline small">Swap</button>
-                                    <button class="btn btn-accent small" onclick="window.app.showToast('Updated', 'Patient marked as Arrived.', 'success')">Check-in</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        `;
-    }
-
-    function renderRecPayments() {
-        mainViewContent.innerHTML = `
-            <div class="rec-payments">
-                <div class="card">
-                    <h3>Counter Payment Processing</h3>
-                    <div class="form-grid mt-4">
-                         <div class="form-group">
-                            <label>Lookup Patient (NIC)</label>
-                            <input type="text" value="951234567V">
-                         </div>
-                         <div class="form-group">
-                            <label>Calculated Fees</label>
-                            <input type="text" value="LKR 2,500.00" readonly>
-                         </div>
-                    </div>
-                    <div class="flex-center mt-6 gap-4">
-                        <button class="btn btn-outline"><i class="fas fa-money-bill"></i> Cash</button>
-                        <button class="btn btn-outline"><i class="fas fa-credit-card"></i> Card</button>
-                    </div>
-                    <button class="btn btn-primary full-width mt-6" onclick="window.app.showToast('Success', 'Digital receipt sent to Patient.', 'success')">Process & Print Receipt</button>
-                </div>
-            </div>
-        `;
-    }
-
-    function renderRecReports() {
-        mainViewContent.innerHTML = `<div class="card"><h3>Daily Operations Report</h3><button class="btn btn-primary">Generate EOD Report</button></div>`;
-    }
 
     function renderPharDashboard() {
         mainViewContent.innerHTML = `
