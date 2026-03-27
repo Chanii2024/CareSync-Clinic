@@ -62,11 +62,12 @@ document.addEventListener('DOMContentLoaded', () => {
         'phar-inventory': renderPharInventory,
         'phar-dispense': renderPharDispense,
         'phar-reports': renderPharReports,
-        'admin-dashboard': renderAdminDashboard,
-        'admin-users': renderAdminUsers,
-        'admin-complaints': renderAdminComplaints,
-        'admin-logs': renderAdminLogs,
-        'admin-settings': renderAdminSettings,
+        'admin-dashboard': () => window.app.renderAdminDashboard(),
+        'admin-users': () => window.app.renderAdminUsers(),
+        'admin-complaints': () => window.app.renderAdminComplaints(),
+        'admin-logs': () => window.app.renderAdminLogs(),
+        'admin-reports': () => window.app.renderAdminReports(),
+        'admin-settings': () => window.app.renderAdminSettings(),
         'nurse-dashboard': renderNurseDashboard,
         'nurse-intake': renderNurseIntake,
         'nurse-procedures': renderNurseProcedures,
@@ -85,6 +86,16 @@ document.addEventListener('DOMContentLoaded', () => {
         e.stopPropagation();
         roleDropdownBtn.classList.toggle('active');
         roleDropdownMenu.classList.toggle('show');
+        const notifDropdown = document.getElementById('notifDropdown');
+        if(notifDropdown) notifDropdown.classList.remove('show');
+    });
+
+    const notifBtn = document.getElementById('notifBtn');
+    notifBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const notifDropdown = document.getElementById('notifDropdown');
+        if(notifDropdown) notifDropdown.classList.toggle('show');
+        roleDropdownMenu?.classList.remove('show');
     });
 
     roleOptions.forEach(option => {
@@ -202,6 +213,9 @@ document.addEventListener('DOMContentLoaded', () => {
             </li>
             <li class="nav-item" data-view="admin-logs">
                 <a href="#"><i class="fas fa-history"></i> <span>Audit Logs</span></a>
+            </li>
+            <li class="nav-item" data-view="admin-reports">
+                <a href="#"><i class="fas fa-chart-pie"></i> <span>Reports & Analytics</span></a>
             </li>
             <li class="nav-item" data-view="admin-settings">
                 <a href="#"><i class="fas fa-cogs"></i> <span>System Settings</span></a>
@@ -1520,161 +1534,6 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
-    function renderAdminDashboard() {
-        mainViewContent.innerHTML = `
-            <div class="admin-dashboard">
-                <div class="stats-grid grid-4">
-                    <div class="stat-card card">
-                        <i class="fas fa-users"></i>
-                        <div class="stat-info"><span class="label">Total Users</span><span class="value">1,240</span></div>
-                    </div>
-                    <div class="stat-card card">
-                        <i class="fas fa-calendar-check"></i>
-                        <div class="stat-info"><span class="label">Daily Appts</span><span class="value">42</span></div>
-                    </div>
-                    <div class="stat-card card">
-                        <i class="fas fa-money-bill-wave"></i>
-                        <div class="stat-info"><span class="label">Revenue (MTD)</span><span class="value">LKR 450K</span></div>
-                    </div>
-                    <div class="stat-card card">
-                        <i class="fas fa-server"></i>
-                        <div class="stat-info"><span class="label">Sys Status</span><span class="value green">Optimal</span></div>
-                    </div>
-                </div>
-
-                <div class="admin-charts-grid mt-6">
-                    <div class="card overflow-hidden">
-                        <h3>Clinic Traffic (24h)</h3>
-                        <div class="chart-mock mt-4">
-                             <div class="bar-chart">
-                                 <div class="bar" style="height: 40%"></div>
-                                 <div class="bar" style="height: 70%"></div>
-                                 <div class="bar" style="height: 90%"></div>
-                                 <div class="bar" style="height: 50%"></div>
-                                 <div class="bar" style="height: 30%"></div>
-                             </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <h3>Global Appointment Watch</h3>
-                        <div class="table-responsive mt-4">
-                            <table class="data-table small">
-                                <thead><tr><th>Time</th><th>Patient</th><th>Status</th></tr></thead>
-                                <tbody>
-                                    <tr><td>09:00</td><td>Kamal P.</td><td><span class="badge success">Arrived</span></td></tr>
-                                    <tr><td>09:30</td><td>Nimali F.</td><td><span class="badge warning">Waitlist</span></td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    function renderAdminUsers() {
-        mainViewContent.innerHTML = `
-            <div class="admin-users card">
-                <div class="flex-between">
-                    <h3>User Management</h3>
-                    <button class="btn btn-primary small">+ New Staff</button>
-                </div>
-                <div class="table-responsive mt-6">
-                    <table class="data-table">
-                        <thead><tr><th>Name</th><th>Role</th><th>Status</th><th>Action</th></tr></thead>
-                        <tbody>
-                            <tr><td>Dr. Rohan Silva</td><td>Doctor</td><td><span class="badge success">Active</span></td><td><button class="btn btn-outline small">Manage</button></td></tr>
-                            <tr><td>Sarah J.</td><td>Receptionist</td><td><span class="badge success">Active</span></td><td><button class="btn btn-outline small">Manage</button></td></tr>
-                            <tr class="muted"><td>Old User</td><td>Patient</td><td><span class="badge secondary">Inactive</span></td><td><button class="btn btn-primary small">Activate</button></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        `;
-    }
-
-    function renderAdminComplaints() {
-        mainViewContent.innerHTML = `
-            <div class="admin-complaints card">
-                <h3>Patient Feedback & Complaints</h3>
-                <div class="filter-bar flex gap-4 mt-4">
-                    <button class="btn btn-outline active small">All (12)</button>
-                    <button class="btn btn-outline small">Pending (3)</button>
-                    <button class="btn btn-outline small">Resolved (9)</button>
-                </div>
-                <div class="table-responsive mt-6">
-                    <table class="data-table">
-                        <thead><tr><th>Time</th><th>Patient</th><th>Subject</th><th>Status</th></tr></thead>
-                        <tbody>
-                            <tr><td>10:15 AM</td><td>Kamal P.</td><td>Wait time at Pharmacy</td><td><span class="badge warning">New</span></td></tr>
-                            <tr><td>Yesterday</td><td>Sarah M.</td><td>Billing discrepancy</td><td><span class="badge success">Resolved</span></td></tr>
-                            <tr><td>Yesterday</td><td>Wimal S.</td><td>Facility cleanliness</td><td><span class="badge info">In Progress</span></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        `;
-    }
-
-    function renderAdminLogs() {
-        mainViewContent.innerHTML = `
-            <div class="admin-logs card">
-                <h3>System Audit Vault</h3>
-                <div class="log-entries mt-4">
-                    <div class="log-item border-b py-2 text-sm">
-                        <span class="text-muted">[20:01:06]</span> <strong>Admin</strong> accessed <strong>Audit Logs</strong>.
-                    </div>
-                    <div class="log-item border-b py-2 text-sm">
-                        <span class="text-muted">[19:45:22]</span> <strong>Receptionist (Sarah)</strong> swapped slot for <strong>Kamal P.</strong>
-                    </div>
-                    <div class="log-item border-b py-2 text-sm">
-                        <span class="text-muted">[18:30:11]</span> <strong>System</strong> triggered <strong>Database Backup</strong>.
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    function renderAdminSettings() {
-        mainViewContent.innerHTML = `
-            <div class="admin-settings grid-2">
-                <div class="card">
-                    <h3>System Control</h3>
-                    <div class="mt-6">
-                        <div class="flex-between py-4 border-b">
-                            <span>Maintenance Mode</span>
-                            <div class="toggle-switch" onclick="window.app.toggleMaintenance()"></div>
-                        </div>
-                        <div class="flex-between py-4 border-b">
-                            <span>Public Registration</span>
-                            <div class="toggle-switch active"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card danger-zone">
-                    <h3>Emergency Overrides</h3>
-                    <p class="mt-2 text-sm">Request one-time access to restricted patient data for urgent clinical audits.</p>
-                    <button class="btn btn-accent full-width mt-4" onclick="window.app.showToast('Requested', 'Request sent to ethics committee.', 'info')">Request Break-Glass Access</button>
-                </div>
-            </div>
-        `;
-    }
-
-    function toggleMaintenance() {
-        const banner = document.getElementById('maintenanceBanner');
-        if (banner) {
-            banner.remove();
-            showToast('Maintenance Off', 'System is now in live mode.', 'success');
-        } else {
-            const newBanner = document.createElement('div');
-            newBanner.id = 'maintenanceBanner';
-            newBanner.className = 'maintenance-banner';
-            newBanner.innerHTML = `<i class="fas fa-tools"></i> <strong>System Maintenance:</strong> Scheduled updates at 11:00 PM. Performance may be impacted.`;
-            document.body.prepend(newBanner);
-            showToast('Maintenance On', 'System banner is now visible to all users.', 'warning');
-        }
-    }
-
     function renderNurseDashboard() {
         mainViewContent.innerHTML = `
             <div class="nurse-dashboard">
@@ -1855,7 +1714,6 @@ document.addEventListener('DOMContentLoaded', () => {
     Object.assign(window.app, {
         switchView,
         initFormValidation, initFileUpload,
-        showToast, showOverlapPopup,
-        toggleMaintenance
+        showToast, showOverlapPopup
     });
 });
