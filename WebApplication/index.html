@@ -90,10 +90,59 @@
                 </div>
                 <div class="header-right">
                     <!-- Role Switcher for Demo -->
-                    <div class="role-switcher">
-                        <button class="btn btn-outline small" id="roleToggle">
-                            <i class="fas fa-sync-alt"></i> <span id="currentRoleText">Switch to Doctor</span>
+                    <div class="role-switcher-dropdown" id="roleSwitcher">
+                        <button class="role-dropdown-trigger" id="roleDropdownBtn">
+                            <div class="trigger-icon"><i class="fas fa-user-tag"></i></div>
+                            <div class="trigger-text">
+                                <span class="label">Switch Portal</span>
+                                <span id="currentRoleDisplay" class="value">Patient Portal</span>
+                            </div>
+                            <i class="fas fa-chevron-down arrow"></i>
                         </button>
+                        <div class="role-dropdown-menu" id="roleDropdownMenu">
+                            <div class="role-option active" data-role="patient">
+                                <div class="option-icon patient"><i class="fas fa-user"></i></div>
+                                <div class="role-details">
+                                    <span class="role-name">Patient Portal</span>
+                                    <span class="role-desc">Records & Appointments</span>
+                                </div>
+                            </div>
+                            <div class="role-option" data-role="doctor">
+                                <div class="option-icon doctor"><i class="fas fa-user-md"></i></div>
+                                <div class="role-details">
+                                    <span class="role-name">Doctor Portal</span>
+                                    <span class="role-desc">Consultations & Queue</span>
+                                </div>
+                            </div>
+                            <div class="role-option" data-role="nurse">
+                                <div class="option-icon nurse"><i class="fas fa-user-nurse"></i></div>
+                                <div class="role-details">
+                                    <span class="role-name">Nurse Portal</span>
+                                    <span class="role-desc">Intake & Daily Tasks</span>
+                                </div>
+                            </div>
+                            <div class="role-option" data-role="receptionist">
+                                <div class="option-icon receptionist"><i class="fas fa-concierge-bell"></i></div>
+                                <div class="role-details">
+                                    <span class="role-name">Receptionist</span>
+                                    <span class="role-desc">Bookings & Payments</span>
+                                </div>
+                            </div>
+                            <div class="role-option" data-role="pharmacist">
+                                <div class="option-icon pharmacist"><i class="fas fa-pills"></i></div>
+                                <div class="role-details">
+                                    <span class="role-name">Pharmacist</span>
+                                    <span class="role-desc">Inventory & Dispensing</span>
+                                </div>
+                            </div>
+                            <div class="role-option" data-role="admin">
+                                <div class="option-icon admin"><i class="fas fa-user-shield"></i></div>
+                                <div class="role-details">
+                                    <span class="role-name">Admin Center</span>
+                                    <span class="role-desc">System & User Management</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="notifications-dropdown">
                         <button class="icon-btn" id="notifBtn">

@@ -15,8 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const sidebar = document.getElementById('sidebar');
     const sidebarToggle = document.getElementById('sidebarToggle');
     const sidebarClose = document.getElementById('sidebarClose');
-    const roleToggle = document.getElementById('roleToggle');
-    const currentRoleText = document.getElementById('currentRoleText');
+    // Role Switcher elements are defined below in the role switcher logic section
     const navItems = document.querySelectorAll('.nav-item');
     const navList = document.querySelector('.sidebar-nav ul');
     const mainViewContent = document.getElementById('mainViewContent');
@@ -75,17 +74,71 @@ document.addEventListener('DOMContentLoaded', () => {
         'nurse-edu': renderNurseEdu
     };
 
-    // --- Role Switching Logic ---
-    const roles = ['patient', 'doctor', 'nurse', 'receptionist', 'pharmacist', 'admin'];
-    roleToggle?.addEventListener('click', () => {
-        const nextIndex = (roles.indexOf(currentRole) + 1) % roles.length;
-        currentRole = roles[nextIndex];
-        updateUIRole();
+    // --- Role Switcher (Premium Dropdown) Logic ---
+    const roleSwitcher = document.getElementById('roleSwitcher');
+    const roleDropdownBtn = document.getElementById('roleDropdownBtn');
+    const roleDropdownMenu = document.getElementById('roleDropdownMenu');
+    const roleOptions = document.querySelectorAll('.role-option');
+    const currentRoleDisplay = document.getElementById('currentRoleDisplay');
+
+    roleDropdownBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        roleDropdownBtn.classList.toggle('active');
+        roleDropdownMenu.classList.toggle('show');
     });
+
+    roleOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            const selectedRole = option.getAttribute('data-role');
+            currentRole = selectedRole;
+            
+            // UI Feedback
+            roleOptions.forEach(opt => opt.classList.remove('active'));
+            option.classList.add('active');
+            
+            // Close dropdown
+            roleDropdownBtn.classList.remove('active');
+            roleDropdownMenu.classList.remove('show');
+            
+            updateUIRole();
+        });
+    });
+
+    // Close on click outside
+    document.addEventListener('click', (e) => {
+        if (!roleSwitcher?.contains(e.target)) {
+            roleDropdownBtn?.classList.remove('active');
+            roleDropdownMenu?.classList.remove('show');
+        }
+    });
+
+    const roleMap = {
+        patient: 'Patient Portal',
+        doctor: 'Doctor Portal',
+        nurse: 'Nurse Portal',
+        receptionist: 'Receptionist',
+        pharmacist: 'Pharmacist',
+        admin: 'Admin Center'
+    };
 
     function updateUIRole() {
         const roleDisplay = currentRole.charAt(0).toUpperCase() + currentRole.slice(1);
         if (headerRoleText) headerRoleText.textContent = roleDisplay;
+        if (currentRoleDisplay) currentRoleDisplay.textContent = roleMap[currentRole] || roleDisplay;
+
+        // Update trigger icon based on role
+        const triggerIcon = roleDropdownBtn?.querySelector('.trigger-icon i');
+        if (triggerIcon) {
+            const iconMap = {
+                patient: 'fa-user',
+                doctor: 'fa-user-md',
+                nurse: 'fa-user-nurse',
+                receptionist: 'fa-concierge-bell',
+                pharmacist: 'fa-pills',
+                admin: 'fa-user-shield'
+            };
+            triggerIcon.className = `fas ${iconMap[currentRole] || 'fa-user-tag'}`;
+        }
 
         // Update name/email in dropdown
         const dropName = profileDropdown?.querySelector('strong');
@@ -93,28 +146,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if (dropName) dropName.textContent = `Tang San (${roleDisplay})`;
         if (dropEmail) dropEmail.textContent = `${currentRole}@gmail.com`;
 
+        // Routing based on role
         if (currentRole === 'doctor') {
-            currentRoleText.textContent = 'Switch to Nurse';
             renderDoctorSidebar();
             switchView('doc-dashboard');
         } else if (currentRole === 'nurse') {
-            currentRoleText.textContent = 'Switch to Receptionist';
             renderNurseSidebar();
             switchView('nurse-dashboard');
         } else if (currentRole === 'receptionist') {
-            currentRoleText.textContent = 'Switch to Pharmacist';
             renderReceptionistSidebar();
             switchView('rec-dashboard');
         } else if (currentRole === 'pharmacist') {
-            currentRoleText.textContent = 'Switch to Admin';
             renderPharmacistSidebar();
             switchView('phar-dashboard');
         } else if (currentRole === 'admin') {
-            currentRoleText.textContent = 'Switch to Patient';
             renderAdminSidebar();
             switchView('admin-dashboard');
         } else {
-            currentRoleText.textContent = 'Switch to Doctor';
             renderPatientSidebar();
             switchView('dashboard');
         }

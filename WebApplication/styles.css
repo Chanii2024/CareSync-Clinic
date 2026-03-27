@@ -455,15 +455,181 @@ body {
     }
 }
 
-/* Role Switcher adjustments for mobile */
-@media (max-width: 480px) {
-    #roleToggle span {
+/* --- Role Switcher Dropdown (Premium) --- */
+.role-switcher-dropdown {
+    position: relative;
+    z-index: 1000;
+}
+
+.role-dropdown-trigger {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 18px;
+    background: #f1f5f9;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.role-dropdown-trigger:hover {
+    background: #e2e8f0;
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+}
+
+.role-dropdown-trigger.active {
+    background: white;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(32, 201, 151, 0.1);
+}
+
+.trigger-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+}
+
+.trigger-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.1;
+}
+
+.trigger-text .label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.trigger-text .value {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.role-dropdown-trigger .arrow {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    transition: transform 0.3s;
+}
+
+.role-dropdown-trigger.active .arrow {
+    transform: rotate(180deg);
+}
+
+.role-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 280px;
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 8px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px) scale(0.95);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.role-dropdown-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    pointer-events: all;
+}
+
+.role-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.role-option:hover {
+    background: #f8fafc;
+}
+
+.role-option.active {
+    background: rgba(32, 201, 151, 0.05);
+}
+
+.option-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+.option-icon.patient { background: #ebf8ff; color: #3182ce; }
+.option-icon.doctor { background: #e6fffa; color: #319795; }
+.option-icon.nurse { background: #fffaf0; color: #dd6b20; }
+.option-icon.receptionist { background: #faf5ff; color: #805ad5; }
+.option-icon.pharmacist { background: #fff5f5; color: #e53e3e; }
+.option-icon.admin { background: #f0fff4; color: #38a169; }
+
+.role-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.role-desc {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.role-option.active .role-name {
+    color: var(--accent);
+}
+
+/* Mobile Adjustments for Role Switcher */
+@media (max-width: 768px) {
+    .role-dropdown-menu {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        top: auto;
+        width: 100%;
+        border-radius: 30px 30px 0 0;
+        transform: translateY(100%);
+        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2);
+        padding: 24px 20px 40px;
+    }
+
+    .role-dropdown-menu.show {
+        transform: translateY(0);
+    }
+
+    .role-dropdown-trigger .trigger-text {
         display: none;
     }
 
-    #roleToggle {
-        padding: 8px;
-        border-radius: 50%;
+    .role-dropdown-trigger {
+        padding: 6px;
+        gap: 0;
+    }
+    
+    .role-dropdown-trigger .arrow {
+        display: none;
     }
 }
 
