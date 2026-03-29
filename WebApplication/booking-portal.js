@@ -236,7 +236,7 @@
                         </div>
                         <div class="box-actions">
                             <button class="btn btn-outline" onclick="window.app.nextStep(2)">Back</button>
-                            <button class="btn btn-primary large" onclick="window.app.finishBooking()">Confirm & Pay Appointment <i class="fas fa-check"></i></button>
+                            <button class="btn btn-primary large" onclick="window.app.openPaymentModal()">Confirm & Pay <i class="fas fa-lock"></i></button>
                         </div>
                     </div>
                 `;
@@ -443,14 +443,323 @@
         window.app.renderBooking();
     };
 
+    // ---- Payment Modal ----
+    window.app.openPaymentModal = (overrideData = null) => {
+        const existing = document.getElementById('paymentModalOverlay');
+        if (existing) existing.remove();
+
+        const fee = overrideData ? overrideData.amount : (state.doctor ? state.doctor.fee : '0');
+        const docName = overrideData ? (overrideData.doctor || 'Clinic Services') : (state.doctor ? state.doctor.name : 'CareSync Specialist');
+        const dateStr = overrideData ? (overrideData.date || 'Today') : (state.date || 'TBA');
+        const timeStr = overrideData ? (overrideData.time || '') : (state.time || '');
+
+        const overlay = document.createElement('div');
+        overlay.id = 'paymentModalOverlay';
+        overlay.className = 'payment-modal-overlay';
+        overlay.innerHTML = `
+            <div class="payment-modal animate-slide-up" id="paymentModal">
+
+                <!-- Header -->
+                <div class="pm-header">
+                    <div class="pm-header-left">
+                        <div class="pm-lock-icon"><i class="fas fa-shield-alt"></i></div>
+                        <div>
+                            <h2>Secure Payment</h2>
+                            <p>256-bit SSL Encrypted</p>
+                        </div>
+                    </div>
+                    <button class="pm-close-btn" onclick="window.app.closePaymentModal()" aria-label="Close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <!-- Order Summary Banner -->
+                <div class="pm-summary-banner">
+                    <div class="pm-summary-item">
+                        <span class="pm-summary-label">Appointment with</span>
+                        <span class="pm-summary-value">${docName}</span>
+                    </div>
+                    <div class="pm-summary-divider"></div>
+                    <div class="pm-summary-item">
+                        <span class="pm-summary-label">Date & Time</span>
+                        <span class="pm-summary-value">${dateStr} ${timeStr ? '• ' + timeStr : ''}</span>
+                    </div>
+                    <div class="pm-summary-divider"></div>
+                    <div class="pm-summary-item">
+                        <span class="pm-summary-label">Total Amount</span>
+                        <span class="pm-summary-value pm-amount">LKR ${fee}</span>
+                    </div>
+                </div>
+
+                <!-- Payment Form -->
+                <form class="pm-form" id="paymentForm" onsubmit="event.preventDefault(); window.app.processPayment(${!!overrideData});">
+
+                    <div class="pm-row">
+                        <div class="pm-field-group">
+                            <label for="pmCardNumber">Card Number</label>
+                            <div class="pm-input-wrapper">
+                                <i class="fas fa-credit-card pm-input-icon"></i>
+                                <input type="text" id="pmCardNumber" placeholder="1234 5678 9012 3456"
+                                    maxlength="19" autocomplete="cc-number" inputmode="numeric"
+                                    oninput="window.app.handleCardNumberInput(this)">
+                                <span class="pm-card-badge" id="pmCardBadge"></span>
+                            </div>
+                            <span class="pm-field-error" id="pmCardNumberErr"></span>
+                        </div>
+
+                        <div class="pm-field-group">
+                            <label for="pmCardHolder">Cardholder Name</label>
+                            <div class="pm-input-wrapper">
+                                <i class="fas fa-user pm-input-icon"></i>
+                                <input type="text" id="pmCardHolder" placeholder="As printed on card"
+                                    autocomplete="cc-name"
+                                    oninput="window.app.handleCardHolderInput(this)">
+                            </div>
+                            <span class="pm-field-error" id="pmCardHolderErr"></span>
+                        </div>
+                    </div>
+
+                    <div class="pm-row">
+                        <div class="pm-field-group">
+                            <label for="pmExpiry">Expiry Date</label>
+                            <div class="pm-input-wrapper">
+                                <i class="fas fa-calendar-alt pm-input-icon"></i>
+                                <input type="text" id="pmExpiry" placeholder="MM / YY"
+                                    maxlength="7" autocomplete="cc-exp" inputmode="numeric"
+                                    oninput="window.app.handleExpiryInput(this)">
+                            </div>
+                            <span class="pm-field-error" id="pmExpiryErr"></span>
+                        </div>
+                        <div class="pm-field-group">
+                            <label for="pmCVV">
+                                CVV / CVC
+                                <span class="pm-cvv-help" title="3-digit code on the back (4 for Amex)">
+                                    <i class="fas fa-question-circle"></i>
+                                </span>
+                            </label>
+                            <div class="pm-input-wrapper">
+                                <i class="fas fa-lock pm-input-icon"></i>
+                                <input type="password" id="pmCVV" placeholder="•••"
+                                    maxlength="4" autocomplete="cc-csc" inputmode="numeric"
+                                    oninput="window.app.handleCVVInput(this)">
+                                <button type="button" class="pm-toggle-cvv"
+                                    onclick="window.app.toggleCVVVisibility()" tabindex="-1">
+                                    <i class="fas fa-eye" id="pmCVVToggleIcon"></i>
+                                </button>
+                            </div>
+                            <span class="pm-field-error" id="pmCVVErr"></span>
+                        </div>
+                    </div>
+
+                    <div class="pm-field-group">
+                        <label for="pmBillingEmail">Billing Email</label>
+                        <div class="pm-input-wrapper">
+                            <i class="fas fa-envelope pm-input-icon"></i>
+                            <input type="email" id="pmBillingEmail" placeholder="receipt@email.com"
+                                autocomplete="email">
+                        </div>
+                        <span class="pm-field-error" id="pmEmailErr"></span>
+                    </div>
+
+                    <div class="pm-security-badges">
+                        <div class="pm-sec-badge"><i class="fas fa-lock"></i> SSL Secured</div>
+                        <div class="pm-sec-badge"><i class="fas fa-shield-alt"></i> PCI DSS</div>
+                        <div class="pm-sec-badge"><i class="fas fa-user-shield"></i> 3D Secure</div>
+                        <div class="pm-sec-badge"><i class="fab fa-cc-visa"></i> <i class="fab fa-cc-mastercard"></i></div>
+                    </div>
+
+                    <button type="submit" class="pm-pay-btn" id="pmPayBtn">
+                        <i class="fas fa-lock"></i>
+                        Pay LKR ${fee} Securely
+                    </button>
+
+                    <p class="pm-disclaimer">
+                        <i class="fas fa-info-circle"></i>
+                        Your card details are encrypted and never stored on our servers.
+                    </p>
+                </form>
+            </div>
+        `;
+
+        document.body.appendChild(overlay);
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) window.app.closePaymentModal();
+        });
+        setTimeout(() => document.getElementById('pmCardNumber')?.focus(), 300);
+    };
+
+    window.app.closePaymentModal = () => {
+        const overlay = document.getElementById('paymentModalOverlay');
+        if (overlay) {
+            overlay.classList.add('pm-closing');
+            setTimeout(() => overlay.remove(), 300);
+        }
+    };
+
+    window.app.handleCardNumberInput = (input) => {
+        let v = input.value.replace(/\D/g, '').substring(0, 16);
+        input.value = v.replace(/(\d{4})/g, '$1 ').trim();
+        const display = document.getElementById('pmDisplayNumber');
+        if (display) {
+            const padded = v.padEnd(16, '•');
+            display.textContent = padded.replace(/(\d{4}|•{4})/g, '$1 ').trim();
+        }
+        const badge = document.getElementById('pmCardBadge');
+        const icon = document.getElementById('pmCardTypeIcon');
+        let type = '', iconClass = 'fas fa-credit-card', color = '';
+        if (/^4/.test(v))              { type = 'VISA';       iconClass = 'fab fa-cc-visa';       color = '#1a365d'; }
+        else if (/^5[1-5]/.test(v))   { type = 'MC';         iconClass = 'fab fa-cc-mastercard'; color = '#eb5757'; }
+        else if (/^3[47]/.test(v))    { type = 'AMEX';       iconClass = 'fab fa-cc-amex';       color = '#2b6cb0'; }
+        if (badge) badge.textContent = type;
+        if (icon) icon.innerHTML = `<i class="${iconClass}" style="color:${color}"></i>`;
+        document.getElementById('pmCardNumberErr').textContent = '';
+    };
+
+    window.app.handleCardHolderInput = (input) => {
+        // Validation: No numbers in name
+        input.value = input.value.replace(/[0-9]/g, '');
+        const display = document.getElementById('pmDisplayHolder');
+        if (display) display.textContent = input.value.toUpperCase() || 'YOUR NAME';
+        document.getElementById('pmCardHolderErr').textContent = '';
+    };
+
+    window.app.handleExpiryInput = (input) => {
+        let v = input.value.replace(/\D/g, '');
+        if (v.length >= 2) v = v.substring(0, 2) + ' / ' + v.substring(2, 4);
+        input.value = v;
+        const display = document.getElementById('pmDisplayExpiry');
+        if (display) {
+            const parts = input.value.split(' / ');
+            display.textContent = parts[0] ? `${parts[0].padEnd(2,'M')} / ${(parts[1] || '').padEnd(2,'Y')}` : 'MM / YY';
+        }
+        document.getElementById('pmExpiryErr').textContent = '';
+    };
+
+    window.app.handleCVVInput = (input) => {
+        input.value = input.value.replace(/\D/g, '').substring(0, 4);
+        document.getElementById('pmCVVErr').textContent = '';
+    };
+
+    window.app.toggleCVVVisibility = () => {
+        const cvvInput = document.getElementById('pmCVV');
+        const icon = document.getElementById('pmCVVToggleIcon');
+        if (cvvInput.type === 'password') {
+            cvvInput.type = 'text';
+            icon.className = 'fas fa-eye-slash';
+        } else {
+            cvvInput.type = 'password';
+            icon.className = 'fas fa-eye';
+        }
+    };
+
+    window.app.processPayment = (isBillingTabAction = false) => {
+        let valid = true;
+        const cardNum = document.getElementById('pmCardNumber').value.replace(/\s/g, '');
+        if (cardNum.length < 13 || cardNum.length > 16) {
+            document.getElementById('pmCardNumberErr').textContent = 'Invalid card number.';
+            valid = false;
+        }
+        const holder = document.getElementById('pmCardHolder').value.trim();
+        if (holder.length < 3) {
+            document.getElementById('pmCardHolderErr').textContent = 'Enter full cardholder name.';
+            valid = false;
+        }
+        const expiry = document.getElementById('pmExpiry').value;
+        if (!/^\d{2}\s\/\s\d{2}$/.test(expiry)) {
+            document.getElementById('pmExpiryErr').textContent = 'Invalid expiry (MM / YY).';
+            valid = false;
+        }
+        const cvv = document.getElementById('pmCVV').value;
+        if (cvv.length < 3) {
+            document.getElementById('pmCVVErr').textContent = 'Invalid CVV.';
+            valid = false;
+        }
+        const email = document.getElementById('pmBillingEmail').value.trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            document.getElementById('pmEmailErr').textContent = 'Invalid email address.';
+            valid = false;
+        }
+
+        // --- DEMO BYPASS: Validation skipped for preview mode ---
+        // if (!valid) return;
+
+        const btn = document.getElementById('pmPayBtn');
+        const form = document.getElementById('paymentForm');
+        
+        // Simple visual processing state
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Your Payment...';
+
+        // Dynamic context data for the success screen
+        const successData = {
+            txnId: `TXN-${Math.floor(Math.random() * 9000000) + 1000000}`,
+            amount: document.querySelector('.pm-summary-value.pm-amount').innerText,
+            doctor: document.querySelector('.pm-summary-item:first-child .pm-summary-value').innerText,
+            isBilling: isBillingTabAction
+        };
+
+        setTimeout(() => {
+            window.app.showPaymentSuccess(successData);
+        }, 2000);
+    };
+
+    window.app.showPaymentSuccess = (data) => {
+        const modal = document.getElementById('paymentModal');
+        if (!modal) return;
+
+        // Replace modal content with the success view
+        modal.innerHTML = `
+            <div class="pm-success-view animate-fade-in">
+                <div class="pm-checkmark-wrapper">
+                    <i class="fas fa-check pm-checkmark-icon"></i>
+                </div>
+                <h2>Payment Successful!</h2>
+                <p class="pm-success-p">${data.isBilling ? 'The outstanding bill has been settled.' : 'Your appointment has been confirmed.'}</p>
+                
+                <div class="pm-receipt-box">
+                    <div class="pm-receipt-row">
+                        <span class="pm-receipt-label">Transaction ID</span>
+                        <span class="pm-receipt-value">${data.txnId}</span>
+                    </div>
+                    <div class="pm-receipt-row">
+                        <span class="pm-receipt-label">Service / Doctor</span>
+                        <span class="pm-receipt-value">${data.doctor}</span>
+                    </div>
+                    <div class="pm-receipt-row">
+                        <span class="pm-receipt-label">Status</span>
+                        <span class="pm-receipt-value text-success">Verified & Paid</span>
+                    </div>
+                    <div class="pm-receipt-row">
+                        <span class="pm-receipt-label">Total Amount Paid</span>
+                        <span class="pm-receipt-value pm-success-amt">${data.amount}</span>
+                    </div>
+                </div>
+
+                <div class="pm-success-actions">
+                    <button class="btn btn-primary" onclick="window.app.closePaymentModal(); window.app.switchView('appointments');">
+                        <i class="fas fa-calendar-check"></i> View Appointments
+                    </button>
+                    <button class="btn btn-outline" onclick="window.app.closePaymentModal(); window.app.showToast('Receipt Downloaded', 'A copy of the receipt was sent to your email.', 'success');">
+                        <i class="fas fa-file-download"></i> Download Receipt
+                    </button>
+                </div>
+            </div>
+        `;
+
+        if (window.app.showToast) {
+            window.app.showToast('Success!', 'Your payment was processed securely.', 'success');
+        }
+    };
+
     window.app.finishBooking = () => {
         const mainViewContent = document.getElementById('mainViewContent');
+        const refNo = `CS-${Math.floor(Math.random() * 90000) + 10000}`;
         mainViewContent.innerHTML = `
-            <div class="success-screen animate-fade-in">
+            <div class="success-screen animate-fade-in shadow-lg">
                 <div class="success-card glass-card animate-bounce-in">
                     <div class="success-icon"><i class="fas fa-check-circle"></i></div>
                     <h1>Booking Confirmed!</h1>
-                    <p class="ref-no">Reference: <span>CS-${Math.floor(Math.random() * 90000) + 10000}</span></p>
+                    <p class="ref-no">Reference: <span>${refNo}</span></p>
                     <div class="success-details-grid">
                         <div class="detail-item"><label>Doctor</label><strong>${state.doctor.name}</strong></div>
                         <div class="detail-item"><label>Date & Time</label><strong>${state.date} at ${state.time}</strong></div>
@@ -462,7 +771,7 @@
                 </div>
             </div>
         `;
-        if (window.app.showToast) window.app.showToast('Appointment Booked', 'Check your SMS for confirmation.', 'success');
+        if (window.app.showToast) window.app.showToast('Payment Successful', 'Check your email for appointment details.', 'success');
     };
 
     // Export view renderers

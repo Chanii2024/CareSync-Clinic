@@ -35,7 +35,7 @@
                                         <td><span class="status-badge ${bill.status.toLowerCase()}">${bill.status}</span></td>
                                         <td>
                                             ${bill.status === 'Pending' 
-                                                ? `<button class="btn btn-primary small" onclick="window.app.showPaymentModal('${bill.id}', '${bill.amount}')">Pay Now</button>` 
+                                                ? `<button class="btn btn-primary small" onclick="window.app.openPaymentModal({ amount: '${bill.amount}', doctor: '${bill.type === 'Consultation' ? 'Dr. Rohan Silva' : 'CareSync Pharmacy'}', type: '${bill.type}', date: 'Today' })">Pay Now</button>` 
                                                 : `<button class="btn btn-link small" onclick="window.app.showReceipt('${bill.id}')"><i class="fas fa-download"></i> Receipt</button>`}
                                         </td>
                                     </tr>
@@ -70,39 +70,6 @@
                 </div>
             </div>
         `;
-    }
-
-    function showPaymentModal(invId, amount) {
-        let overlay = document.getElementById('customModalOverlay');
-        if (!overlay) {
-            overlay = document.createElement('div');
-            overlay.id = 'customModalOverlay';
-            overlay.className = 'custom-modal-overlay';
-            document.body.appendChild(overlay);
-        }
-        overlay.innerHTML = `
-            <div class="custom-modal">
-                <div class="modal-header"><h3>Secure Payment</h3></div>
-                <div class="modal-body">
-                    <div class="payment-summary p-4 bg-light border-radius mb-6">
-                        <div class="flex-between mb-2"><span>Invoice:</span><strong>#${invId}</strong></div>
-                        <div class="flex-between"><span>Amount:</span><strong>LKR ${amount}</strong></div>
-                    </div>
-                    <div class="form-group"><label>Card Number</label><input type="text" class="form-control" placeholder="**** **** **** ****"></div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-outline" onclick="window.app.closeCustomModal()">Cancel</button>
-                    <button class="btn btn-success" onclick="window.app.confirmPayment('${invId}')">Confirm Payment</button>
-                </div>
-            </div>
-        `;
-        overlay.classList.add('active');
-    }
-
-    function confirmPayment(invId) {
-        window.app.closeCustomModal();
-        window.app.showToast('Payment Successful', `Invoice #${invId} has been paid.`, 'success');
-        setTimeout(() => renderBilling(), 500);
     }
 
     function showReceipt(invId) {
@@ -159,6 +126,6 @@
     }
 
     Object.assign(window.app, {
-        renderBilling, showPaymentModal, confirmPayment, showReceipt, showOrderDetail
+        renderBilling, showReceipt, showOrderDetail
     });
 })();

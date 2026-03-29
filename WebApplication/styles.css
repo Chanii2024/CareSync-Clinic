@@ -4635,3 +4635,385 @@ input:checked+.slider:before {
 @media (max-width: 480px) {
     .grid-4 { grid-template-columns: 1fr !important; }
 }
+
+/* --- CareSync Premium Secure Payment Modal (pm- prefix) --- */
+.payment-modal-overlay {
+    position: fixed;
+    top: 0; left: 0; 
+    width: 100%; height: 100%; 
+    background: rgba(15, 23, 42, 0.7); 
+    backdrop-filter: blur(8px); 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    overflow: hidden; /* Fix overlay: scrolling is now internal to the card */
+    padding: 0;
+    z-index: 5000; 
+    animation: pmFadeIn 0.3s ease-out;
+}
+
+.payment-modal {
+    background: #ffffff;
+    width: 100%;
+    max-width: 680px;
+    max-height: 90vh; /* Premium sticky height */
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column; /* Split into fixed header/summary and scrollable form */
+    overflow: hidden;
+    box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation: pmSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    z-index: 5001;
+    margin: 20px;
+}
+
+.pm-header {
+    padding: 24px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.pm-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.pm-lock-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--primary);
+    color: var(--accent);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+}
+
+.pm-header-left h2 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin: 0;
+}
+
+.pm-header-left p {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 0;
+}
+
+.pm-close-btn {
+    background: #f8fafc;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid #e2e8f0;
+}
+
+.pm-close-btn:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+    transform: rotate(90deg);
+}
+
+.pm-summary-banner {
+    background: var(--gradient-premium);
+    padding: 28px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+.pm-summary-item {
+    flex: 1;
+}
+
+.pm-summary-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.pm-summary-value {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #ffffff;
+    display: block;
+}
+
+.pm-summary-value.pm-amount {
+    color: var(--accent);
+    font-size: 1.3rem;
+}
+
+.pm-summary-divider {
+    width: 1px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 0 24px;
+}
+
+/* Card Visual Removed - Form continues below summary */
+
+.pm-form {
+    padding: 32px;
+    overflow-y: auto; /* Enable internal scrolling */
+    flex: 1; /* Take up remaining space */
+}
+
+.pm-field-group {
+    margin-bottom: 24px;
+    position: relative;
+}
+
+.pm-field-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 8px;
+}
+
+.pm-input-wrapper {
+    position: relative;
+}
+
+.pm-input-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 1.1rem;
+    transition: color 0.2s;
+}
+
+.pm-form input {
+    width: 100%;
+    padding: 16px 16px 16px 52px;
+    border: 2.5px solid #f1f5f9;
+    border-radius: 14px;
+    font-size: 1.05rem;
+    color: #1e293b;
+    background: #f8fafc;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: inherit;
+    font-weight: 500;
+}
+
+.pm-form input:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: #ffffff;
+    box-shadow: 0 0 0 5px rgba(32, 201, 151, 0.1);
+}
+
+.pm-form input:focus + i.pm-input-icon {
+    color: var(--accent);
+}
+
+.pm-card-badge {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #20c997;
+    background: rgba(32, 201, 151, 0.1);
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.pm-field-error {
+    font-size: 0.75rem;
+    color: #ef4444;
+    font-weight: 700;
+    margin-top: 6px;
+    display: block;
+    padding-left: 4px;
+}
+
+.pm-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.pm-cvv-help {
+    color: #94a3b8;
+    cursor: pointer;
+    transition: color 0.2s;
+    margin-left: 4px;
+}
+
+.pm-cvv-help:hover {
+    color: #1e293b;
+}
+
+.pm-toggle-cvv {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 4px;
+    transition: color 0.2s;
+}
+
+.pm-toggle-cvv:hover {
+    color: #20c997;
+}
+
+.pm-security-badges {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 8px;
+    padding-top: 24px;
+    border-top: 1px solid #f1f5f9;
+    flex-wrap: wrap;
+}
+
+.pm-sec-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    background: #ffffff;
+    border: 1.5px solid #f1f5f9;
+    padding: 8px 16px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.pm-sec-badge:hover {
+    border-color: #20c997;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.pm-sec-badge i {
+    color: #20c997;
+    font-size: 0.9rem;
+}
+
+.pm-pay-btn {
+    width: 100%;
+    background: var(--gradient-accent);
+    color: #ffffff;
+    border: none;
+    padding: 20px;
+    border-radius: 16px;
+    font-size: 1.15rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 32px;
+    box-shadow: 0 12px 24px rgba(32, 201, 151, 0.25);
+}
+
+.pm-pay-btn:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 40px rgba(32, 201, 151, 0.35);
+}
+
+.pm-pay-btn:active:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.pm-pay-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.pm-disclaimer {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 500;
+}
+
+.pm-disclaimer i {
+    color: #20c997;
+}
+
+@keyframes pmFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pmSlideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+.pm-closing {
+    animation: pmFadeOut 0.3s ease-in forwards;
+}
+
+@keyframes pmFadeOut { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.95); } }
+
+@media (max-width: 600px) {
+    .pm-summary-banner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    .pm-summary-divider {
+        display: none;
+    }
+    .pm-row {
+        grid-template-columns: 1fr;
+    }
+    .payment-modal {
+        border-radius: 0;
+        margin: 0;
+        min-height: 100vh;
+    }
+    .pm-card-visual {
+        padding: 20px 20px 0;
+    }
+    .pm-form {
+        padding: 24px;
+    }
+}
+
+
+/* --- CareSync Payment Success Interface --- */
+.pm-success-view { padding: 48px 32px; text-align: center; animation: pmSlideUp 0.5s ease-out; }
+.pm-checkmark-wrapper { width: 100px; height: 100px; background: rgba(32, 201, 151, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 32px; position: relative; }
+.pm-checkmark-icon { color: #20c997; font-size: 3.5rem; animation: pmCheckmarkPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+.pm-success-view h2 { color: #1a365d; font-size: 1.8rem; font-weight: 800; margin-bottom: 12px; }
+.pm-success-p { color: #64748b; font-size: 1rem; margin-bottom: 40px; }
+.pm-receipt-box { background: #f8fafc; border: 1.5px dashed #e2e8f0; border-radius: 20px; padding: 24px; margin-bottom: 40px; text-align: left; }
+.pm-receipt-row { display: flex; justify-content: space-between; margin-bottom: 12px; }
+.pm-receipt-row:last-child { margin-bottom: 0; padding-top: 12px; border-top: 1px solid #e2e8f0; margin-top: 12px; }
+.pm-receipt-label { font-size: 0.8rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+.pm-receipt-value { font-size: 0.95rem; color: #1a365d; font-weight: 700; }
+.pm-receipt-value.pm-success-amt { color: #20c997; font-size: 1.1rem; }
+.pm-success-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@keyframes pmCheckmarkPop { 0% { transform: scale(0); opacity: 0; } 50% { transform: scale(1.2); } 100% { transform: scale(1); opacity: 1; } }
