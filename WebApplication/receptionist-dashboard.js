@@ -278,49 +278,242 @@ window.app.renderRecAppointments = function() {
 window.app.renderRecPayments = function() {
     const mainViewContent = document.getElementById('mainViewContent');
     mainViewContent.innerHTML = `
-        <div class="rec-payments animate-slide-up">
-            <div class="card p-8" style="border-radius: var(--radius-lg); max-width: 800px; margin: 0 auto; box-shadow: var(--shadow-md);">
-                <div style="text-align: center; margin-bottom: 32px;">
-                    <div style="width: 64px; height: 64px; background: rgba(32, 201, 151, 0.1); color: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 16px auto;">
-                        <i class="fas fa-cash-register"></i>
+        <div class="rec-payments animate-fade-in" style="width: 100%; height: 100%; display: flex; flex-direction: column; gap: 24px;">
+            <!-- Header Section -->
+            <div class="glass-card p-6" style="background: var(--gradient-premium); color: white; border: none; border-radius: var(--radius-lg);">
+                <div class="flex-between">
+                    <div>
+                        <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 4px;"><i class="fas fa-cash-register mr-3"></i> Counter Payment Processing</h2>
+                        <p style="opacity: 0.9;">Secure checkout and digital invoicing for clinic services.</p>
                     </div>
-                    <h3 style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">Counter Payment Processing</h3>
-                    <p style="color: var(--text-muted); margin-top: 8px;">Fast checkout and digital invoicing for walk-in patients.</p>
                 </div>
+            </div>
 
-                <div class="form-grid" style="grid-template-columns: 1fr; background: #f8fafc; padding: 24px; border-radius: 16px; border: 1px solid var(--border-color);">
-                     <div class="form-group mb-4">
-                        <label style="color: var(--primary); font-weight: 700;"><i class="fas fa-id-card mr-2"></i> Lookup Patient Identity (NIC/Passport)</label>
+            <div class="grid-2 gap-6" style="flex: 1; align-items: start;">
+                <!-- Left Column: Patient Lookup -->
+                <div class="card p-6" style="height: auto; border-radius: var(--radius-lg);">
+                    <h3 style="font-weight: 800; color: var(--primary); font-size: 1.2rem; margin-bottom: 24px;">
+                        <i class="fas fa-search-dollar mr-2" style="color: var(--accent);"></i> 1. Lookup Identity
+                    </h3>
+                    
+                    <div class="form-group mb-4">
+                        <label style="color: var(--primary); font-weight: 700;">NIC / Passport Number <span class="text-error">*</span></label>
                         <div style="position: relative;">
-                            <input type="text" value="951234567V" style="width: 100%; padding: 14px 16px; border-radius: 12px; border: 2px solid var(--accent); font-weight: 600; font-size: 1.1rem;">
-                            <button class="btn btn-accent" style="position: absolute; right: 4px; top: 4px; bottom: 4px; border-radius: 8px;">Verify</button>
+                            <input type="text" id="paymentNicLookup" placeholder="e.g. 951234567V" 
+                                   style="width: 100%; padding: 16px; border-radius: 12px; font-weight: 600; font-size: 1.1rem; border: 2px solid var(--border-color);"
+                                   oninput="window.app.validatePaymentNic(this.value)">
+                            <button class="btn btn-accent" style="position: absolute; right: 6px; top: 6px; bottom: 6px; border-radius: 10px; padding: 0 20px;" 
+                                    onclick="window.app.verifyPaymentPatient()">
+                                Verify Identity
+                            </button>
                         </div>
-                     </div>
-                     
-                     <div style="border-top: 1px dashed #cbd5e1; margin: 20px 0;"></div>
+                        <span id="nicValidationMsg" class="validation-msg text-error" style="font-weight: 600; min-height: 20px; display: block; margin-top: 6px;"></span>
+                    </div>
 
-                     <div class="form-group">
-                        <label style="color: var(--primary); font-weight: 700;"><i class="fas fa-file-invoice-dollar mr-2"></i> Total Calculated Fees</label>
-                        <input type="text" value="LKR 2,500.00" readonly style="width: 100%; padding: 16px; border-radius: 12px; border: 1px solid #cbd5e1; font-weight: 800; font-size: 1.4rem; color: #10b981; background: #ecfdf5;">
-                     </div>
+                    <!-- Patient Result Card (Hidden by default) -->
+                    <div id="patientVerificationCard" class="hidden animate-slide-up" style="margin-top: 24px; padding: 20px; background: #f8fafc; border: 1.5px solid var(--accent); border-radius: 16px;">
+                        <div class="flex gap-4" style="align-items: center; margin-bottom: 16px;">
+                            <img src="https://ui-avatars.com/api/?name=Kamal+Perera&background=e6fffa&color=20c997&size=64" style="width: 64px; border-radius: 16px; border: 2px solid white; box-shadow: var(--shadow-sm);">
+                            <div>
+                                <strong id="resPatientName" style="font-size: 1.2rem; color: var(--primary); display: block;">Kamal Perera</strong>
+                                <span id="resPatientId" style="font-family: monospace; font-size: 0.9rem; color: var(--text-muted);">ID: #PT-1042 • 951234567V</span>
+                            </div>
+                        </div>
+                        <div class="grid-2 gap-3" style="font-size: 0.9rem;">
+                            <div style="background: white; padding: 10px; border-radius: 10px; border: 1px solid var(--border-color);">
+                                <span class="text-muted block" style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700;">Age / Gender</span>
+                                <strong id="resPatientAge">29 Years / Male</strong>
+                            </div>
+                            <div style="background: white; padding: 10px; border-radius: 10px; border: 1px solid var(--border-color);">
+                                <span class="text-muted block" style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700;">Contact</span>
+                                <strong id="resPatientContact">+94 77 123 4567</strong>
+                            </div>
+                        </div>
+                        <div class="alert info mt-4" style="margin-bottom: 0; padding: 10px; border-radius: 10px; font-size: 0.85rem;">
+                            <i class="fas fa-info-circle mr-2"></i> <strong>Receptionist:</strong> Please cross-check these details with the physical document.
+                        </div>
+                    </div>
                 </div>
 
-                <div class="flex gap-4 mt-8" style="justify-content: center;">
-                    <button class="btn btn-outline" style="flex: 1; padding: 16px; border-radius: 12px; border-width: 2px; font-size: 1.1rem; font-weight: 700; color: var(--primary); border-color: var(--primary);">
-                        <i class="fas fa-money-bill-wave" style="margin-right: 8px; color: #10b981;"></i> Cash Payment
-                    </button>
-                    <button class="btn btn-outline" style="flex: 1; padding: 16px; border-radius: 12px; border-width: 2px; font-size: 1.1rem; font-weight: 700; color: var(--primary); border-color: var(--primary);">
-                        <i class="fas fa-credit-card" style="margin-right: 8px; color: #3b82f6;"></i> Credit / Debit
+                <!-- Right Column: Bill & Payment -->
+                <div id="paymentSection" class="card p-6" style="height: auto; border-radius: var(--radius-lg); opacity: 0.5; pointer-events: none; transition: all 0.3s;">
+                    <h3 style="font-weight: 800; color: var(--primary); font-size: 1.2rem; margin-bottom: 24px;">
+                        <i class="fas fa-file-invoice-dollar mr-2" style="color: #3b82f6;"></i> 2. Bill Summary
+                    </h3>
+                    
+                    <div style="background: #f8fafc; padding: 20px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 24px;">
+                        <div class="flex-between mb-3">
+                            <span class="text-muted">Consultation Fee</span>
+                            <strong style="color: var(--primary);">LKR 2,000.00</strong>
+                        </div>
+                        <div class="flex-between mb-3">
+                            <span class="text-muted">Clinic Charges</span>
+                            <strong style="color: var(--primary);">LKR 500.00</strong>
+                        </div>
+                        <div style="border-top: 1px dashed #cbd5e1; margin: 16px 0;"></div>
+                        <div class="flex-between">
+                            <span style="font-weight: 800; color: var(--primary); font-size: 1.1rem;">Total Amount</span>
+                            <strong style="font-size: 1.8rem; color: #10b981;">LKR 2,500.00</strong>
+                        </div>
+                    </div>
+
+                    <label style="color: var(--primary); font-weight: 700; display: block; margin-bottom: 12px;">Select Payment Method</label>
+                    <div class="flex gap-4 mb-6">
+                        <button id="payMethodCash" class="btn btn-outline" style="flex: 1; padding: 20px; border-radius: 16px; border-width: 2px; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: all 0.2s;" onclick="window.app.selectPaymentMethod('cash')">
+                            <i class="fas fa-money-bill-wave" style="font-size: 1.5rem; color: #10b981;"></i>
+                            <span style="font-weight: 700; color: var(--primary);">Cash</span>
+                        </button>
+                        <button id="payMethodCard" class="btn btn-outline" style="flex: 1; padding: 20px; border-radius: 16px; border-width: 2px; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: all 0.2s;" onclick="window.app.selectPaymentMethod('card')">
+                            <i class="fas fa-credit-card" style="font-size: 1.5rem; color: #3b82f6;"></i>
+                            <span style="font-weight: 700; color: var(--primary);">Credit / Debit</span>
+                        </button>
+                    </div>
+
+                    <div id="posInterface" class="hidden animate-slide-up mb-6" style="padding: 16px; background: #eff6ff; border: 1px solid #3b82f6; border-radius: 12px; text-align: center;">
+                        <div class="flex-center gap-3" style="color: #3b82f6; font-weight: 700;">
+                            <i class="fas fa-spinner fa-spin"></i> Initializing Terminal...
+                        </div>
+                        <p style="font-size: 0.8rem; color: #1e40af; margin-top: 4px;">Ask patient to tap/insert card on the counter POS.</p>
+                    </div>
+                    
+                    <button class="btn btn-primary full-width" style="padding: 20px; border-radius: 16px; font-size: 1.2rem; font-weight: 800; box-shadow: 0 10px 15px -3px rgba(26, 54, 93, 0.2);" onclick="window.app.processCounterPayment()">
+                        Complete Transaction <i class="fas fa-check-circle ml-2"></i>
                     </button>
                 </div>
-                
-                <button class="btn btn-primary full-width mt-6" style="padding: 18px; border-radius: 12px; font-size: 1.1rem; font-weight: 800; box-shadow: 0 10px 15px -3px rgba(26, 54, 93, 0.2);" onclick="window.app.showToast('Success', 'Payment confirmed. Digital receipt sent via SMS to Patient.', 'success')">
-                    Process & Generate Receipt <i class="fas fa-arrow-right ml-2"></i>
-                </button>
             </div>
         </div>
+
+        <style>
+            .rec-payments .btn-outline:hover {
+                background: #f8fafc;
+                border-color: var(--accent);
+            }
+            .rec-payments .hidden {
+                display: none;
+            }
+            .rec-payments .block {
+                display: block;
+            }
+        </style>
     `;
 };
+
+// --- Logic Helpers for Counter Payments ---
+
+window.app.validatePaymentNic = function(nic) {
+    const msg = document.getElementById('nicValidationMsg');
+    const input = document.getElementById('paymentNicLookup');
+    
+    // Sri Lankan NIC: 9 digits + V/X or 12 digits
+    const oldNicPattern = /^[0-9]{9}[vVxX]$/;
+    const newNicPattern = /^[0-9]{12}$/;
+    
+    if (!nic) {
+        msg.textContent = "";
+        input.style.borderColor = "var(--border-color)";
+        return;
+    }
+    
+    if (oldNicPattern.test(nic) || newNicPattern.test(nic)) {
+        msg.textContent = "✓ Valid NIC Format";
+        msg.style.color = "var(--accent)";
+        input.style.borderColor = "var(--accent)";
+    } else {
+        msg.textContent = "⚠ Invalid NIC Format (e.g., 951234567V or 199512345678)";
+        msg.style.color = "#ef4444";
+        input.style.borderColor = "#ef4444";
+    }
+};
+
+window.app.verifyPaymentPatient = function() {
+    const nicInput = document.getElementById('paymentNicLookup');
+    const nic = nicInput.value;
+    
+    // Sri Lankan NIC/Passport Validation
+    const oldNicPattern = /^[0-9]{9}[vVxX]$/;
+    const newNicPattern = /^[0-9]{12}$/;
+    
+    if (!nic || !(oldNicPattern.test(nic) || newNicPattern.test(nic))) {
+        window.app.showToast('Invalid Input', 'Please enter a valid Sri Lankan NIC number.', 'warning');
+        nicInput.style.borderColor = "#ef4444";
+        return;
+    }
+
+    // Mock verification delay
+    const btn = document.querySelector('.btn-accent');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+    btn.disabled = true;
+
+    setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        
+        // Mock data logic
+        if (nic.startsWith('95') || nic.length === 12) {
+            document.getElementById('patientVerificationCard').classList.remove('hidden');
+            document.getElementById('paymentSection').style.opacity = '1';
+            document.getElementById('paymentSection').style.pointerEvents = 'all';
+            window.app.showToast('Verified', 'Patient record found. Please cross-check details.', 'success');
+        } else {
+            window.app.showToast('Not Found', 'No patient record matches this identity.', 'error');
+        }
+    }, 1200);
+};
+
+window.app.selectPaymentMethod = function(method) {
+    const cashBtn = document.getElementById('payMethodCash');
+    const cardBtn = document.getElementById('payMethodCard');
+    const posInt = document.getElementById('posInterface');
+
+    if (method === 'cash') {
+        cashBtn.style.borderColor = 'var(--accent)';
+        cashBtn.style.background = 'rgba(32, 201, 151, 0.05)';
+        cardBtn.style.borderColor = 'var(--border-color)';
+        cardBtn.style.background = 'white';
+        posInt.classList.add('hidden');
+        window.app.selectedMethod = 'cash';
+    } else {
+        cardBtn.style.borderColor = '#3b82f6';
+        cardBtn.style.background = 'rgba(59, 130, 246, 0.05)';
+        cashBtn.style.borderColor = 'var(--border-color)';
+        cashBtn.style.background = 'white';
+        posInt.classList.remove('hidden');
+        window.app.selectedMethod = 'card';
+        
+        // Simulate terminal initialization
+        posInt.innerHTML = '<div class="flex-center gap-3" style="color: #3b82f6; font-weight: 700;"><i class="fas fa-spinner fa-spin"></i> Initializing Terminal...</div>';
+        setTimeout(() => {
+            posInt.innerHTML = '<div class="flex-center gap-3" style="color: #10b981; font-weight: 700;"><i class="fas fa-wifi"></i> Terminal Ready. Tap/Swipe Now.</div>';
+        }, 1500);
+    }
+};
+
+window.app.processCounterPayment = function() {
+    if (!window.app.selectedMethod) {
+        window.app.showToast('Action Required', 'Please select a payment method.', 'warning');
+        return;
+    }
+
+    const btn = document.querySelector('#paymentSection .btn-primary');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Transaction...';
+    btn.disabled = true;
+
+    setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        
+        window.app.showToast('Success', 'Payment confirmed! Digital receipt sent to patient.', 'success');
+        
+        // Reset view after success
+        setTimeout(() => {
+            window.app.renderRecPayments();
+            window.app.selectedMethod = null;
+        }, 2000);
+    }, 2500);
+};
+
 
 window.app.renderRecReports = function() {
     const mainViewContent = document.getElementById('mainViewContent');

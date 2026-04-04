@@ -142,7 +142,8 @@ window.app.renderDocPatientDetail = function(patientId) {
                         <div class="flex-between"><span class="text-muted">Phone:</span> <span class="font-bold">${p.phone}</span></div>
                     </div>
                     <div class="p-4" style="border-top: 1px solid var(--border-color); background: var(--bg-main); border-radius: 0 0 8px 8px;">
-                        <button class="btn btn-primary full-width" style="padding: 12px;" onclick="window.app.startConsultation(${p.id}, '${p.name.replace(/'/g, "\\'")}')">New Consultation</button>
+                        <button class="btn btn-primary full-width" style="padding: 12px; margin-bottom: 10px;" onclick="window.app.startConsultation(${p.id}, '${p.name.replace(/'/g, "\\'")}')">New Consultation</button>
+                        <button class="btn btn-outline full-width" style="padding: 12px;" onclick="window.app.openPatientEditModal(${p.id})"><i class="fas fa-user-edit"></i> Edit Master Record</button>
                     </div>
                 </div>
 

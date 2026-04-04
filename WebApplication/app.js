@@ -1710,10 +1710,195 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
+    // --- Doctor: Patient Master Record Edit Modal ---
+    window.app.openPatientEditModal = function(patientId) {
+        let overlay = document.getElementById('patientEditModalOverlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'patientEditModalOverlay';
+            overlay.className = 'custom-modal-overlay auth-overlay hidden';
+            document.body.appendChild(overlay);
+        }
+        
+        // Mock data fetch. Use default generic values if matching fails.
+        const mockPatientData = {
+            name: 'Kamal Perera',
+            phone: '077 123 4567',
+            nic: '951234567V',
+            bloodGroup: 'B+',
+            allergies: 'Penicillin',
+            conditions: 'Hypertension, Type 2 Diabetes'
+        };
+
+        overlay.innerHTML = `
+            <div class="login-card animate-slide-up" style="max-width: 600px; width: 95%; position: relative; max-height: 90vh; overflow-y: auto;">
+                <button type="button" class="modal-close" onclick="document.getElementById('patientEditModalOverlay').classList.add('hidden')" style="position: absolute; right: 20px; top: 20px; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted);"><i class="fas fa-times"></i></button>
+                <div class="mb-4">
+                    <h3 style="font-size: 1.5rem; font-weight: 800; color: var(--primary);"><i class="fas fa-user-edit mr-2" style="color: var(--accent);"></i> Update Master Record</h3>
+                    <p class="text-muted text-sm mt-1">Keep the patient's baseline information up-to-date.</p>
+                </div>
+                
+                <form id="docPatientEditForm" onsubmit="window.app.submitPatientEdit(event)">
+                    <!-- Contact Data -->
+                    <div class="card p-4 mb-4" style="background: rgba(241, 245, 249, 0.5); border: 1px solid var(--border-color);">
+                        <h4 class="mb-3 text-primary" style="font-size: 1.05rem;"><i class="fas fa-id-card"></i> Demographic Data</h4>
+                        <div class="form-grid" style="gap: 12px;">
+                            <div class="form-group full-width" style="margin-bottom: 0;">
+                                <label style="font-size: 0.85rem;">Full Name <span class="text-error">*</span></label>
+                                <input type="text" id="editPatName" value="${mockPatientData.name}" required style="padding: 12px; border-radius: 8px;">
+                                <span class="validation-msg text-sm" style="margin-top: 4px; display: block; font-weight: 500;"></span>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label style="font-size: 0.85rem;">Phone Number <span class="text-error">*</span></label>
+                                <input type="text" id="editPatPhone" value="${mockPatientData.phone}" required style="padding: 12px; border-radius: 8px;">
+                                <span class="validation-msg text-sm" style="margin-top: 4px; display: block; font-weight: 500;"></span>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label style="font-size: 0.85rem;">NIC / Passport <span class="text-error">*</span></label>
+                                <input type="text" id="editPatNic" value="${mockPatientData.nic}" required style="padding: 12px; border-radius: 8px;">
+                                <span class="validation-msg text-sm" style="margin-top: 4px; display: block; font-weight: 500;"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Clinical Baseline Data -->
+                    <div class="card p-4 mb-4" style="background: rgba(230, 255, 250, 0.3); border: 1px solid rgba(32, 201, 151, 0.2);">
+                        <h4 class="mb-3 text-primary" style="font-size: 1.05rem;"><i class="fas fa-heartbeat text-accent"></i> Clinical Baseline</h4>
+                        <div class="form-grid" style="gap: 12px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label style="font-size: 0.85rem;">Blood Group</label>
+                                <div class="custom-select-wrapper" style="width: 100%;">
+                                    <select id="editPatBloodGroup" class="custom-select" style="padding: 10px 42px 10px 14px; width: 100%; border-radius: 8px; border: 1.5px solid var(--border-color);">
+                                        <option value="A+" ${mockPatientData.bloodGroup==='A+'?'selected':''}>A+</option>
+                                        <option value="A-" ${mockPatientData.bloodGroup==='A-'?'selected':''}>A-</option>
+                                        <option value="B+" ${mockPatientData.bloodGroup==='B+'?'selected':''}>B+</option>
+                                        <option value="B-" ${mockPatientData.bloodGroup==='B-'?'selected':''}>B-</option>
+                                        <option value="AB+" ${mockPatientData.bloodGroup==='AB+'?'selected':''}>AB+</option>
+                                        <option value="AB-" ${mockPatientData.bloodGroup==='AB-'?'selected':''}>AB-</option>
+                                        <option value="O+" ${mockPatientData.bloodGroup==='O+'?'selected':''}>O+</option>
+                                        <option value="O-" ${mockPatientData.bloodGroup==='O-'?'selected':''}>O-</option>
+                                        <option value="Unknown" ${mockPatientData.bloodGroup==='Unknown'?'selected':''}>Unknown</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- Spacer for grid alignment -->
+                            <div class="form-group" style="margin-bottom: 0; display: none;"></div>
+
+                            <div class="form-group full-width" style="margin-bottom: 0; margin-top: 10px;">
+                                <label style="font-size: 0.85rem;">Known Allergies (Comma separated)</label>
+                                <textarea id="editPatAllergies" rows="2" placeholder="e.g. Penicillin, Latex" class="custom-input" style="padding: 12px; border-radius: 8px; width: 100%; border: 1.5px solid var(--border-color);">${mockPatientData.allergies}</textarea>
+                                <small class="text-muted" style="font-size: 0.75rem; margin-top: 4px;">Important for prescribing.</small>
+                            </div>
+                            <div class="form-group full-width" style="margin-bottom: 0; margin-top: 10px;">
+                                <label style="font-size: 0.85rem;">Chronic Conditions (Comma separated)</label>
+                                <textarea id="editPatConditions" rows="2" placeholder="e.g. Diabetes, Asthma" class="custom-input" style="padding: 12px; border-radius: 8px; width: 100%; border: 1.5px solid var(--border-color);">${mockPatientData.conditions}</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4" style="margin-top: 24px;">
+                        <button type="button" class="btn btn-outline full-width" style="border-radius: 12px; padding: 12px;" onclick="document.getElementById('patientEditModalOverlay').classList.add('hidden')">Cancel</button>
+                        <button type="submit" class="btn btn-primary full-width" style="border-radius: 12px; padding: 12px;">Update Record <i class="fas fa-check-circle ml-2"></i></button>
+                    </div>
+                </form>
+            </div>
+        `;
+        
+        // Remove 'hidden' class to show and bind real-time validation events
+        overlay.classList.remove('hidden');
+        
+        // Bind validations real-time
+        ['editPatName', 'editPatPhone', 'editPatNic'].forEach(id => {
+            const el = document.getElementById(id);
+            if(el) {
+                el.addEventListener('input', () => window.app.validatePatientEditField(el));
+                el.addEventListener('blur', () => window.app.validatePatientEditField(el));
+            }
+        });
+    };
+
+    window.app.validatePatientEditField = function(input) {
+        const val = input.value.trim();
+        const msgElement = input.nextElementSibling;
+        if(!msgElement || !msgElement.classList.contains('validation-msg')) return true;
+        
+        let valid = true;
+        let msg = '';
+        
+        if (input.id === 'editPatPhone') {
+            const slRegex = /^(?:\+94|0)?(?:7\d{8}|[1-9]\d{8})$/;
+            if (!val) {
+                valid = false;
+                msg = 'Phone number is required';
+            } else if (!slRegex.test(val)) {
+                valid = false;
+                msg = 'Invalid phone format (e.g., 0771234567 or +94...)';
+            }
+        } else if (input.id === 'editPatNic') {
+            const nicRegex = /^(?:[0-9]{9}[vVxX]|[0-9]{12})$/;
+            if (!val) {
+                valid = false;
+                msg = 'NIC is required';
+            } else if (!nicRegex.test(val)) {
+                valid = false;
+                msg = 'Invalid NIC format (e.g. 199500000000 or 951234567V)';
+            }
+        } else if (input.id === 'editPatName') {
+            if (!val) {
+                valid = false;
+                msg = 'Name is required';
+            } else if (/\d/.test(val)) {
+                valid = false;
+                msg = 'Name cannot contain numbers';
+            } else if (val.length < 3) {
+                valid = false;
+                msg = 'Name must be at least 3 characters';
+            }
+        }
+
+        if (!valid) {
+            input.style.borderColor = '#ef4444';
+            msgElement.innerHTML = `<i class="fas fa-exclamation-circle"></i> ` + msg;
+            msgElement.style.color = '#ef4444';
+            return false;
+        } else {
+            input.style.borderColor = '#10b981';
+            msgElement.innerHTML = `<i class="fas fa-check-circle"></i> Valid input`;
+            msgElement.style.color = '#10b981';
+            return true;
+        }
+    };
+
+    window.app.submitPatientEdit = function(e) {
+        e.preventDefault();
+        
+        const isNameValid = window.app.validatePatientEditField(document.getElementById('editPatName'));
+        const isPhoneValid = window.app.validatePatientEditField(document.getElementById('editPatPhone'));
+        const isNicValid = window.app.validatePatientEditField(document.getElementById('editPatNic'));
+        
+        if (!isNameValid || !isPhoneValid || !isNicValid) {
+            window.app.showToast('Validation Error', 'Please fix the highlighted errors before saving.', 'error');
+            return;
+        }
+
+        // Simulate save
+        const btn = e.target.querySelector('button[type="submit"]');
+        const origText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        btn.disabled = true;
+
+        setTimeout(() => {
+            btn.innerHTML = origText;
+            btn.disabled = false;
+            document.getElementById('patientEditModalOverlay').classList.add('hidden');
+            window.app.showToast('Record Updated', 'Patient master record has been successfully updated.', 'success');
+        }, 800);
+    };
+
     // Expose functions globally
     Object.assign(window.app, {
         switchView,
         initFormValidation, initFileUpload,
-        showToast, showOverlapPopup
+        showToast
     });
 });
